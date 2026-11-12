@@ -99,26 +99,19 @@
   <div class="card">
     <div class="label">✨ AI Generate — ជ្រើសរើសប្រទេស ហើយបង្កើតឈ្មោះ</div>
     <select class="country-sel" id="countrySel" onchange="onCountryChange()"></select>
-    <button class="btn-ai" onclick="aiGenerate()">✨ AI Generate</button>
-    <div class="gen-preview" id="genPreview" style="display:none"></div>
-    <div class="ip-line" id="ipLine" style="display:none">🌐 IP ប្រទេស៖ <b id="ipText"></b><span style="margin-left:auto" id="ipCountry"></span></div>
-    <div class="row" style="margin-top:10px">
-      <button class="btn-ghost" onclick="openSheet()">✏️ ដាក់ឈ្មោះខ្លួនឯង</button>
-      <button class="btn-primary" onclick="createAiAddress()">🚀 បង្កើត Gmail នេះ</button>
+    <div class="row">
+      <button class="btn-ai" style="flex:2;width:auto" onclick="aiGenerate()">✨ AI Generate</button>
+      <button class="btn-danger" id="delBtn" style="flex:1" onclick="deleteAddr()">🗑 Delete</button>
     </div>
+    <div class="ip-line" id="ipLine" style="display:none">🌐 IP ប្រទេស៖ <b id="ipText"></b><span style="margin-left:auto" id="ipCountry"></span></div>
+    <div style="text-align:center;margin-top:10px"><button class="btn-ghost btn-small" onclick="openSheet()">✏️ ដាក់ឈ្មោះខ្លួនឯង</button></div>
   </div>
 
   <!-- 2. active address: Generate + Delete side by side, Gmail + Copy -->
   <div class="card">
     <div class="label">អាសយដ្ឋានបណ្តោះអាសន្នរបស់អ្នក</div>
     <div class="addr" id="activeAddr">កំពុងបង្កើត…</div>
-    <div class="row">
-      <button class="btn-primary" onclick="createAddressAuto()">⚡ Generate</button>
-      <button class="btn-danger" id="delBtn" onclick="deleteAddr()">🗑 Delete</button>
-    </div>
-    <div class="row" style="margin-top:8px">
-      <button class="btn-ghost" onclick="copyAddr()">📋 Copy Gmail</button>
-    </div>
+    <button class="btn-ghost" style="width:100%" onclick="copyAddr()">📋 Copy Gmail</button>
     <div class="note">ប្រើអាសយដ្ឋាននេះដើម្បីចុះឈ្មោះ — សំបុត្រនឹងមកដល់ក្នុងប្រអប់ខាងក្រោមដោយស្វ័យប្រវត្តិ។</div>
   </div>
 
@@ -269,9 +262,8 @@ function onCountryChange() {
   $('ipText').textContent = c.ip;
   $('ipCountry').textContent = c.flag + ' ' + c.name;
 }
-function aiGenerate() {
+async function aiGenerate() {
   const c = aiCountry || COUNTRIES[0];
-  const domain = domains[0] || 'fldubai.com';
   const sep = pick(['.', '', '_']);
   const style = Math.floor(Math.random() * 3);
   let name;
@@ -280,26 +272,8 @@ function aiGenerate() {
   else name = pick(c.first) + pick(c.last) + randNum(3);
   name = cleanName(name);
   aiName = name;
-  $('genPreview').style.display = 'block';
-  $('genPreview').innerHTML = esc(name + '@' + domain) + '<small>✨ ឈ្មោះតាមស្ទីល ' + esc(c.flag + ' ' + c.name) + ' — លាយលេខ មិនដូចគេ</small>';
   onCountryChange();
-}
-async function createAiAddress() {
-  if (!aiName) { aiGenerate(); }
-  if (!aiName) return;
-  setStatus(false, 'កំពុងបង្កើត…');
-  try {
-    const a = await api('/api/address', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: aiName, domain: domains[0] || 'fldubai.com' }),
-    });
-    setActive(a);
-    toast('បង្កើត Gmail ថ្មីរួចហើយ ✓');
-  } catch (e) {
-    setStatus(false, 'មានបញ្ហា');
-    showErr('បង្កើតអាសយដ្ឋានមិនបាន៖ ' + e.message);
-  }
+  await createAddressWith(name);
 }
 function initCountries() {
   $('countrySel').innerHTML = COUNTRIES.map(c => '<option value="' + c.code + '">' + c.flag + ' ' + c.name + '</option>').join('');
