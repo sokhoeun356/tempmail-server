@@ -8,90 +8,121 @@
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body {
     font-family: "Noto Sans Khmer", "Kantumruy Pro", system-ui, -apple-system, sans-serif;
-    background: #f4f4f5; color: #1c1c1e; min-height: 100vh;
+    background: linear-gradient(180deg, #fff3e6 0%, #ffe4d1 45%, #ffd9c2 100%);
+    background-attachment: fixed;
+    color: #1c1c1e; min-height: 100vh;
   }
-  .wrap { max-width: 560px; margin: 0 auto; padding: 16px 14px 40px; }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 16px 14px 48px; }
   header { display: flex; align-items: center; justify-content: space-between; padding: 6px 2px 14px; }
-  header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
-  .status { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #555; background: #fff; border: 1px solid #e4e4e7; border-radius: 999px; padding: 6px 12px; }
+  header h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.3px; color: #7c2d12; }
+  .status { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #555; background: #fff; border: 1px solid #fed7aa; border-radius: 999px; padding: 6px 12px; }
   .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.18); }
   .dot.off { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.15); }
-  .card { background: #fff; border: 1px solid #e4e4e7; border-radius: 16px; padding: 16px; margin-bottom: 14px; }
-  .label { font-size: 12px; color: #71717a; margin-bottom: 6px; }
+  .card { background: #fff; border: 1px solid #ffedd5; border-radius: 18px; padding: 16px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(234,88,12,.08); }
+  .label { font-size: 12px; color: #9a3412; margin-bottom: 6px; font-weight: 700; }
   .addr { font-size: 17px; font-weight: 700; word-break: break-all; line-height: 1.4; margin-bottom: 14px; }
   .row { display: flex; gap: 8px; }
   .row > * { flex: 1; }
   button { font-family: inherit; font-size: 15px; font-weight: 700; border: none; border-radius: 12px; padding: 12px 10px; cursor: pointer; }
   button:active { transform: scale(.97); }
-  .btn-primary { background: #ff6a00; color: #fff; }
-  .btn-ghost { background: #f4f4f5; color: #1c1c1e; border: 1px solid #e4e4e7; }
+  .btn-primary { background: linear-gradient(135deg, #ff6a00, #ff8c42); color: #fff; }
+  .btn-ai { background: linear-gradient(135deg, #ea580c, #f472b6); color: #fff; width: 100%; font-size: 16px; padding: 14px; }
+  .btn-ghost { background: #fff7ed; color: #7c2d12; border: 1px solid #fed7aa; }
   .btn-danger { background: #fff; color: #dc2626; border: 1px solid #fecaca; }
   .btn-danger.armed { background: #dc2626; color: #fff; border-color: #dc2626; }
   .btn-small { padding: 8px 12px; font-size: 13px; border-radius: 999px; flex: none; }
-  .note { font-size: 12.5px; color: #71717a; line-height: 1.6; margin-top: 12px; }
-  .otp-card { background: #fff7ed; border: 1px solid #fed7aa; }
+  .note { font-size: 12.5px; color: #9a3412; line-height: 1.6; margin-top: 12px; opacity: .85; }
+  .otp-card { background: linear-gradient(135deg, #fff7ed, #ffedd5); border: 1px solid #fdba74; }
   .otp-card .label { color: #c2410c; }
-  .otp-code { font-size: 30px; font-weight: 800; letter-spacing: 4px; text-align: center; margin: 4px 0 10px; }
-  .otp-from { font-size: 13px; color: #9a3412; text-align: center; margin-bottom: 12px; }
+  .otp-code { font-size: 32px; font-weight: 800; letter-spacing: 5px; text-align: center; margin: 4px 0 10px; color: #7c2d12; }
+  .otp-from { font-size: 13px; color: #9a3412; text-align: center; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .otp-from img { width: 22px; height: 22px; border-radius: 5px; }
   .inbox-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  .inbox-head h2 { font-size: 17px; }
+  .inbox-head h2 { font-size: 17px; color: #7c2d12; }
   .count { background: #ff6a00; color: #fff; font-size: 12px; font-weight: 800; min-width: 22px; height: 22px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; padding: 0 6px; margin-left: 6px; vertical-align: 2px; }
-  .msg { border: 1px solid #e4e4e7; border-radius: 12px; padding: 12px; margin-bottom: 8px; cursor: pointer; background: #fff; }
+  .msg { border: 1px solid #ffedd5; border-radius: 14px; padding: 12px; margin-bottom: 8px; cursor: pointer; background: #fff; }
   .msg.unread { border-color: #ff6a00; background: #fffaf5; }
+  .msg-top { display: flex; gap: 10px; align-items: flex-start; }
+  .msg-logo { width: 38px; height: 38px; border-radius: 10px; flex: none; background: #fff7ed; border: 1px solid #ffedd5; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; color: #ea580c; overflow: hidden; }
+  .msg-logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+  .msg-main { flex: 1; min-width: 0; }
   .msg .from { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
   .msg .subject { font-size: 14px; margin-bottom: 2px; }
   .msg .intro { font-size: 13px; color: #71717a; line-height: 1.5; }
   .msg .date { font-size: 11px; color: #a1a1aa; margin-top: 6px; }
-  .msg-body { font-size: 14px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; margin-top: 10px; border-top: 1px solid #f4f4f5; padding-top: 10px; }
+  .msg-otp { display: inline-flex; align-items: center; gap: 6px; background: #fff7ed; border: 1px solid #fdba74; border-radius: 999px; padding: 5px 6px 5px 10px; margin-top: 8px; font-size: 14px; font-weight: 800; letter-spacing: 2px; color: #7c2d12; }
+  .msg-otp button { padding: 4px 10px; font-size: 12px; }
+  .msg-body { font-size: 14px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; margin-top: 10px; border-top: 1px solid #ffedd5; padding-top: 10px; }
   .empty { text-align: center; color: #a1a1aa; padding: 26px 10px 18px; font-size: 14px; line-height: 1.7; }
   .empty .big { font-size: 38px; margin-bottom: 8px; }
-  .auto { text-align: center; font-size: 12.5px; color: #22c55e; padding: 10px 0 2px; }
-  .vault-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 0; border-bottom: 1px solid #f4f4f5; }
+  .auto { text-align: center; font-size: 12.5px; color: #16a34a; padding: 10px 0 2px; }
+  .vault-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 0; border-bottom: 1px solid #ffedd5; }
   .vault-item:last-child { border-bottom: none; }
   .vault-item .a { font-size: 13.5px; font-weight: 600; word-break: break-all; }
   .vault-item .b { font-size: 11px; color: #a1a1aa; margin-top: 2px; }
-  .vault-item.active .a { color: #ff6a00; }
-  /* sheet */
+  .vault-item.active .a { color: #ea580c; }
+  .tabs3 { display: flex; background: #ffedd5; border-radius: 999px; padding: 4px; margin-bottom: 12px; }
+  .tabs3 button { flex: 1; background: transparent; color: #9a3412; padding: 9px 4px; border-radius: 999px; font-size: 13.5px; }
+  .tabs3 button.on { background: #fff; color: #7c2d12; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+  .vault-empty { font-size: 13px; color: #a1a1aa; text-align: center; padding: 12px 0; }
+  .ip-line { display: flex; align-items: center; gap: 8px; background: #fff7ed; border: 1px dashed #fdba74; border-radius: 12px; padding: 10px 12px; font-size: 13px; margin-top: 10px; color: #7c2d12; }
+  .ip-line b { font-size: 14px; }
+  .country-sel { width: 100%; font-family: inherit; font-size: 16px; padding: 12px; border: 1px solid #fdba74; border-radius: 12px; margin-bottom: 10px; background: #fff; color: #1c1c1e; }
+  .gen-preview { background: #fff7ed; border-radius: 12px; padding: 12px; font-size: 15px; font-weight: 700; word-break: break-all; margin: 10px 0 4px; text-align: center; }
+  .gen-preview small { display: block; font-size: 12px; font-weight: 400; color: #9a3412; margin-top: 4px; }
+  .signup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .signup-grid button { padding: 12px 8px; font-size: 14px; }
+  .toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); background: #1c1c1e; color: #fff; font-size: 14px; padding: 10px 18px; border-radius: 999px; z-index: 99; display: none; white-space: nowrap; max-width: 92vw; overflow: hidden; text-overflow: ellipsis; }
+  .err { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; border-radius: 12px; padding: 12px; font-size: 14px; margin-bottom: 14px; display: none; }
+  .err button { margin-top: 8px; }
   .sheet-bg { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; z-index: 50; }
   .sheet-bg.open { display: block; }
   .sheet { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-radius: 20px 20px 0 0; padding: 18px 16px 26px; z-index: 51; max-width: 560px; margin: 0 auto; display: none; }
   .sheet.open { display: block; }
-  .sheet h3 { font-size: 18px; margin-bottom: 12px; }
-  .tabs { display: flex; background: #f4f4f5; border-radius: 999px; padding: 4px; margin-bottom: 14px; }
-  .tabs button { flex: 1; background: transparent; color: #52525b; padding: 9px; border-radius: 999px; font-size: 14px; }
-  .tabs button.on { background: #fff; color: #1c1c1e; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
-  .sheet label { font-size: 13px; color: #71717a; display: block; margin-bottom: 6px; }
-  .sheet input, .sheet select { width: 100%; font-family: inherit; font-size: 16px; padding: 12px; border: 1px solid #d4d4d8; border-radius: 12px; margin-bottom: 8px; background: #fff; color: #1c1c1e; }
-  .preview { background: #f4f4f5; border-radius: 12px; padding: 12px; font-size: 15px; font-weight: 700; word-break: break-all; margin-bottom: 4px; }
-  .preview small { display: block; font-size: 12px; font-weight: 400; color: #71717a; margin-top: 4px; }
-  .toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); background: #1c1c1e; color: #fff; font-size: 14px; padding: 10px 18px; border-radius: 999px; z-index: 99; display: none; white-space: nowrap; }
-  .err { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; border-radius: 12px; padding: 12px; font-size: 14px; margin-bottom: 14px; display: none; }
-  .err button { margin-top: 8px; }
-  .vault-empty { font-size: 13px; color: #a1a1aa; text-align: center; padding: 12px 0; }
+  .sheet h3 { font-size: 18px; margin-bottom: 12px; color: #7c2d12; }
+  .sheet label { font-size: 13px; color: #9a3412; display: block; margin-bottom: 6px; font-weight: 700; }
+  .sheet input { width: 100%; font-family: inherit; font-size: 16px; padding: 12px; border: 1px solid #fdba74; border-radius: 12px; margin-bottom: 8px; background: #fff; color: #1c1c1e; }
+  .preview { background: #fff7ed; border-radius: 12px; padding: 12px; font-size: 15px; font-weight: 700; word-break: break-all; margin-bottom: 4px; }
+  .preview small { display: block; font-size: 12px; font-weight: 400; color: #9a3412; margin-top: 4px; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>TempMail</h1>
+    <h1>📧 TempMail</h1>
     <span class="status"><span class="dot" id="statusDot"></span><span id="statusText">រួចរាល់</span></span>
   </header>
 
   <div class="err" id="errBox"><span id="errText"></span><br><button class="btn-ghost btn-small" onclick="hideErr()">បិទ</button></div>
 
-  <!-- active address -->
+  <!-- 1. AI Generate + country -->
+  <div class="card">
+    <div class="label">✨ AI Generate — ជ្រើសរើសប្រទេស ហើយបង្កើតឈ្មោះ</div>
+    <select class="country-sel" id="countrySel" onchange="onCountryChange()"></select>
+    <button class="btn-ai" onclick="aiGenerate()">✨ AI Generate</button>
+    <div class="gen-preview" id="genPreview" style="display:none"></div>
+    <div class="ip-line" id="ipLine" style="display:none">🌐 IP ប្រទេស៖ <b id="ipText"></b><span style="margin-left:auto" id="ipCountry"></span></div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn-ghost" onclick="openSheet()">✏️ ដាក់ឈ្មោះខ្លួនឯង</button>
+      <button class="btn-primary" onclick="createAiAddress()">🚀 បង្កើត Gmail នេះ</button>
+    </div>
+  </div>
+
+  <!-- 2. active address: Generate + Delete side by side, Gmail + Copy -->
   <div class="card">
     <div class="label">អាសយដ្ឋានបណ្តោះអាសន្នរបស់អ្នក</div>
     <div class="addr" id="activeAddr">កំពុងបង្កើត…</div>
     <div class="row">
-      <button class="btn-ghost" onclick="copyAddr()">📋 ចម្លង</button>
-      <button class="btn-primary" onclick="openSheet()">⚡ អាសយដ្ឋានថ្មី</button>
-      <button class="btn-danger" id="delBtn" onclick="deleteAddr()">🗑 លុប</button>
+      <button class="btn-primary" onclick="createAddressAuto()">⚡ Generate</button>
+      <button class="btn-danger" id="delBtn" onclick="deleteAddr()">🗑 Delete</button>
     </div>
-    <div class="note">ប្រើអាសយដ្ឋាននេះដើម្បីចុះឈ្មោះ — សំបុត្រនឹងមកដល់ក្នុងប្រអប់ខាងក្រោមដោយស្វ័យប្រវត្តិ។ សំបុត្រនឹងលុបដោយស្វ័យប្រវត្តិក្នុងរយៈពេលខ្លី។</div>
+    <div class="row" style="margin-top:8px">
+      <button class="btn-ghost" onclick="copyAddr()">📋 Copy Gmail</button>
+    </div>
+    <div class="note">ប្រើអាសយដ្ឋាននេះដើម្បីចុះឈ្មោះ — សំបុត្រនឹងមកដល់ក្នុងប្រអប់ខាងក្រោមដោយស្វ័យប្រវត្តិ។</div>
   </div>
 
-  <!-- OTP -->
+  <!-- 3. OTP -->
   <div class="card otp-card" id="otpCard" style="display:none">
     <div class="label">🔑 រកឃើញលេខកូដ OTP</div>
     <div class="otp-code" id="otpCode"></div>
@@ -99,7 +130,7 @@
     <button class="btn-primary" style="width:100%" onclick="copyOtp()">ចម្លង OTP</button>
   </div>
 
-  <!-- inbox -->
+  <!-- 4. inbox -->
   <div class="card">
     <div class="inbox-head">
       <h2>✉️ ប្រអប់សំបុត្រ <span class="count" id="msgCount" style="display:none">0</span></h2>
@@ -109,34 +140,48 @@
     <div class="auto">● ឆែកសំបុត្ររាល់ 10 វិនាទីដោយស្វ័យប្រវត្តិ</div>
   </div>
 
-  <!-- vault -->
+  <!-- 5. Saved / History / Deleted tabs -->
+  <div class="card">
+    <div class="tabs3">
+      <button id="tabSaved" class="on" onclick="setListTab('saved')">💾 រក្សាទុក</button>
+      <button id="tabHistory" onclick="setListTab('history')">🕐 History</button>
+      <button id="tabDeleted" onclick="setListTab('deleted')">🗑 បានលុប</button>
+    </div>
+    <div id="listBox"></div>
+  </div>
+
+  <!-- 6. created Gmail list with options -->
   <div class="card">
     <div class="inbox-head">
-      <h2>🗄️ ឃ្លាំងអាសយដ្ឋាន</h2>
-      <button class="btn-ghost btn-small" onclick="renderVault()">មើល</button>
+      <h2>📬 Gmail ដែលបានបង្កើត</h2>
+      <span style="font-size:12px;color:#a1a1aa" id="createdCount"></span>
     </div>
-    <div id="vaultList"></div>
+    <div id="createdList"></div>
+  </div>
+
+  <!-- 7. Sign Up — make it a real account -->
+  <div class="card">
+    <div class="label">🚀 Sign Up — ចុះឈ្មោះ Gmail នេះឲ្យក្លាយជាគណនីពិត</div>
+    <div class="note" style="margin:0 0 10px">ចុចសេវាណាមួយ — អាសយដ្ឋាននឹងចម្លងរួចហើយ បើកទំព័រចុះឈ្មោះ។</div>
+    <div class="signup-grid">
+      <button class="btn-ghost" onclick="signup('https://www.facebook.com/r.php')">📘 Facebook</button>
+      <button class="btn-ghost" onclick="signup('https://muse.ai')">🤖 Muse AI</button>
+      <button class="btn-ghost" onclick="signup('https://accounts.google.com/signup')">🔍 Google</button>
+      <button class="btn-ghost" onclick="signup('https://www.tiktok.com/signup')">🎵 TikTok</button>
+    </div>
   </div>
 </div>
 
-<!-- new address sheet -->
+<!-- custom name sheet -->
 <div class="sheet-bg" id="sheetBg" onclick="closeSheet()"></div>
 <div class="sheet" id="sheet">
-  <h3>អាសយដ្ឋានថ្មី</h3>
-  <div class="tabs">
-    <button id="tabAuto" class="on" onclick="setMode('auto')">ស្វ័យប្រវត្តិ</button>
-    <button id="tabCustom" onclick="setMode('custom')">ដាក់ឈ្មោះខ្លួនឯង</button>
-  </div>
-  <div id="customBox" style="display:none">
-    <label>ឈ្មោះអាសយដ្ឋាន (អក្សរអង់គ្លេស និងលេខតែប៉ុណ្ណោះ — សញ្ញា «.» ប្រើមិនបានទេ)</label>
-    <input id="customName" placeholder="ឧ. sokha99" oninput="updatePreview()" maxlength="30">
-  </div>
-  <label>Domain</label>
-  <select id="domainSel" onchange="updatePreview()"></select>
+  <h3>ដាក់ឈ្មោះខ្លួនឯង</h3>
+  <label>ឈ្មោះអាសយដ្ឋាន (អក្សរអង់គ្លេស និងលេខតែប៉ុណ្ណោះ — សញ្ញា «.» ប្រើមិនបានទេ)</label>
+  <input id="customName" placeholder="ឧ. sokha99" maxlength="30" oninput="updatePreview()">
   <div class="preview" id="previewAddr">…</div>
   <div class="row" style="margin-top:12px">
     <button class="btn-ghost" onclick="closeSheet()">បោះបង់</button>
-    <button class="btn-primary" onclick="createAddress()">បង្កើត</button>
+    <button class="btn-primary" onclick="createCustomAddress()">បង្កើត</button>
   </div>
 </div>
 
@@ -145,21 +190,24 @@
 <script>
 const LS_ACTIVE = 'tempmail_active';
 const LS_VAULT = 'tempmail_vault';
-let active = null;      // {address, accountId, token}
+const LS_HISTORY = 'tempmail_history';
+const LS_DELETED = 'tempmail_deleted';
+let active = null;
 let domains = ['fldubai.com'];
-let mode = 'auto';
 let messages = [];
 let openedId = null;
 let currentOtp = '';
+let listTab = 'saved';
+let aiName = '';
+let aiCountry = null;
 
 function $(id) { return document.getElementById(id); }
 function toast(t) { const el = $('toast'); el.textContent = t; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 2200); }
 function showErr(t) { $('errText').textContent = t; $('errBox').style.display = 'block'; }
 function hideErr() { $('errBox').style.display = 'none'; }
 function setStatus(ok, txt) { $('statusDot').className = 'dot' + (ok ? '' : ' off'); $('statusText').textContent = txt; }
-
-function loadVault() { try { return JSON.parse(localStorage.getItem(LS_VAULT) || '[]'); } catch (e) { return []; } }
-function saveVault(v) { localStorage.setItem(LS_VAULT, JSON.stringify(v)); }
+function loadLs(k) { try { return JSON.parse(localStorage.getItem(k) || '[]'); } catch (e) { return []; } }
+function saveLs(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
 function loadActive() { try { return JSON.parse(localStorage.getItem(LS_ACTIVE) || 'null'); } catch (e) { return null; } }
 function saveActive(a) { if (a) localStorage.setItem(LS_ACTIVE, JSON.stringify(a)); else localStorage.removeItem(LS_ACTIVE); }
 
@@ -169,31 +217,115 @@ async function api(path, opts) {
   if (!res.ok) throw new Error(data.error || ('កំហុស ' + res.status));
   return data;
 }
-
 function cleanName(raw) { return String(raw || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
+function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+</script>
 
+<script>
+// ---- countries: name style + representative IP per country ----------------
+const COUNTRIES = [
+  { code: 'KH', flag: '🇰🇭', name: 'កម្ពុជា', ip: '103.86.96.1', first: ['sokha','dara','vanna','srey','piseth','chenda','rithy','maly','chan','sophea','bunna','theary'], last: ['sok','chea','heng','kim','ly','phan','roth','sam','tek','vong'] },
+  { code: 'TH', flag: '🇹🇭', name: 'ថៃ', ip: '103.246.18.1', first: ['somchai','nattaya','anan','pimchanok','krit','aom','tan','noi','somsak','araya'], last: ['chai','wong','sri','thai','pon','dee','rat','suk'] },
+  { code: 'VN', flag: '🇻🇳', name: 'វៀតណាម', ip: '113.161.45.1', first: ['anh','linh','minh','trang','duc','hoa','tuan','lan','quang','thao'], last: ['nguyen','tran','le','pham','huynh','vu','dang','bui'] },
+  { code: 'US', flag: '🇺🇸', name: 'អាមេរិក', ip: '104.16.132.1', first: ['james','emily','michael','sarah','david','jessica','chris','ashley','daniel','laura'], last: ['smith','johnson','brown','davis','miller','wilson','moore','taylor'] },
+  { code: 'GB', flag: '🇬🇧', name: 'អង់គ្លេស', ip: '185.151.30.1', first: ['oliver','amelia','harry','isla','george','ava','jack','grace','leo','freya'], last: ['smith','jones','taylor','brown','wilson','evans','thomas','roberts'] },
+  { code: 'FR', flag: '🇫🇷', name: 'បារាំង', ip: '185.75.143.1', first: ['lucas','emma','hugo','chloe','louis','camille','jules','lea','nathan','jade'], last: ['martin','bernard','dubois','moreau','laurent','simon','michel','lefebvre'] },
+  { code: 'DE', flag: '🇩🇪', name: 'អាល្លឺម៉ង់', ip: '185.141.63.1', first: ['lukas','hannah','jonas','lena','felix','mia','max','emma','paul','sophie'], last: ['muller','schmidt','schneider','fischer','weber','meyer','wagner','becker'] },
+  { code: 'IT', flag: '🇮🇹', name: 'អ៊ីតាលី', ip: '185.63.240.1', first: ['marco','giulia','luca','sofia','alessandro','martina','andrea','elena','matteo','chiara'], last: ['rossi','russo','ferrari','esposito','bianchi','romano','colombo','ricci'] },
+  { code: 'ES', flag: '🇪🇸', name: 'អេស្ប៉ាញ', ip: '185.79.175.1', first: ['carlos','maria','javier','lucia','miguel','carmen','pablo','laura','daniel','marta'], last: ['garcia','rodriguez','gonzalez','fernandez','lopez','martinez','sanchez','perez'] },
+  { code: 'JP', flag: '🇯🇵', name: 'ជប៉ុន', ip: '103.4.132.1', first: ['yuki','hana','kenji','sakura','hiroshi','yui','takashi','mei','daiki','aoi'], last: ['tanaka','sato','suzuki','takahashi','watanabe','yamamoto','nakamura','kobayashi'] },
+  { code: 'KR', flag: '🇰🇷', name: 'កូរ៉េ', ip: '103.22.220.1', first: ['minjun','jiwoo','seojun','haeun','donghyuk','soyeon','taeyang','mira','junho','yuna'], last: ['kim','lee','park','choi','jung','kang','cho','yoon'] },
+  { code: 'CN', flag: '🇨🇳', name: 'ចិន', ip: '103.55.188.1', first: ['wei','li','xiaoming','mei','jian','ling','hao','fang','lei','yan'], last: ['wang','li','zhang','liu','chen','yang','huang','zhou'] },
+  { code: 'IN', flag: '🇮🇳', name: 'ឥណ្ឌា', ip: '103.21.124.1', first: ['arjun','priya','rahul','ananya','vikram','kavya','rohan','neha','aditya','isha'], last: ['sharma','patel','singh','kumar','gupta','mehta','verma','joshi'] },
+  { code: 'ID', flag: '🇮🇩', name: 'ឥណ្ឌូនេស៊ី', ip: '103.147.8.1', first: ['budi','sari','agus','dewi','rudi','maya','joko','putri','andi','rina'], last: ['santoso','wijaya','saputra','kusuma','pratama','rahmawati','gunawan','hartono'] },
+  { code: 'PH', flag: '🇵🇭', name: 'ហ្វីលីពីន', ip: '103.29.68.1', first: ['juan','maria','jose','angel','miguel','rosa','carlo','liza','paolo','kristine'], last: ['santos','reyes','cruz','bautista','garcia','mendoza','torres','ramos'] },
+  { code: 'MY', flag: '🇲🇾', name: 'ម៉ាឡេស៊ី', ip: '103.18.132.1', first: ['ahmad','siti','mohd','nur','ali','aisha','farah','hafiz','amir','zara'], last: ['ahmad','ali','ibrahim','mohamed','hassan','abdullah','ismail','osman'] },
+  { code: 'SG', flag: '🇸🇬', name: 'សិង្ហបុរី', ip: '103.86.96.2', first: ['wei','li','chen','mei','jun','hui','kai','jia','xin','hao'], last: ['tan','lim','lee','ng','ong','chan','teo','gwee'] },
+  { code: 'AU', flag: '🇦🇺', name: 'អូស្ត្រាលី', ip: '103.247.108.1', first: ['liam','olivia','noah','mia','jack','charlotte','william','ava','henry','ella'], last: ['smith','jones','brown','wilson','taylor','lee','martin','white'] },
+  { code: 'CA', flag: '🇨🇦', name: 'កាណាដា', ip: '104.238.140.1', first: ['liam','emma','noah','olivia','lucas','sophia','mason','ava','ethan','mia'], last: ['smith','brown','tremblay','martin','roy','gagnon','lee','wilson'] },
+  { code: 'BR', flag: '🇧🇷', name: 'ប្រេស៊ីល', ip: '187.44.32.1', first: ['lucas','julia','gabriel','larissa','rafael','camila','pedro','beatriz','thiago','fernanda'], last: ['silva','santos','oliveira','souza','pereira','costa','rodrigues','almeida'] },
+  { code: 'MX', flag: '🇲🇽', name: 'ម៉ិកស៊ិក', ip: '187.189.10.1', first: ['juan','maria','carlos','ana','luis','sofia','diego','valeria','jorge','carmen'], last: ['hernandez','garcia','martinez','lopez','gonzalez','perez','sanchez','ramirez'] },
+  { code: 'RU', flag: '🇷🇺', name: 'រុស្ស៊ី', ip: '185.220.102.1', first: ['ivan','anna','dmitri','olga','alexei','natalia','sergei','elena','pavel','marina'], last: ['ivanov','smirnov','kuznetsov','popov','vasiliev','petrov','sokolov','mikhailov'] },
+  { code: 'TR', flag: '🇹🇷', name: 'តួកគី', ip: '185.95.84.1', first: ['mehmet','ayse','mustafa','fatma','emre','zeynep','ahmet','elif','murat','selin'], last: ['yilmaz','kaya','demir','celik','sahin','yildiz','ozkan','aydin'] },
+  { code: 'EG', flag: '🇪🇬', name: 'អេហ្ស៊ីប', ip: '102.44.160.1', first: ['ahmed','fatima','mohamed','mona','omar','sara','karim','layla','hassan','nour'], last: ['ahmed','mohamed','hassan','ali','ibrahim','mahmoud','sayed','khaled'] },
+  { code: 'NG', flag: '🇳🇬', name: 'នីហ្សេរីយ៉ា', ip: '102.89.32.1', first: ['chinedu','adaeze','olumide','funke','emeka','ngozi','tobi','kemi','ifeanyi','yetunde'], last: ['adebayo','okonkwo','eze','adeyemi','oluwaseun','chukwu','balogun','obianya','ajibade'] },
+  { code: 'ZA', flag: '🇿🇦', name: 'អាហ្វ្រិកខាងត្បូង', ip: '102.130.112.1', first: ['thabo','naledi','sipho','ayanda','katlego','zanele','bongani','lerato','sibusiso','precious'], last: ['nkosi','dube','mokoena','khumalo','ndlovu','vanwyk','petersen','botha'] },
+  { code: 'NL', flag: '🇳🇱', name: 'ហូឡង់', ip: '185.93.160.1', first: ['jan','emma','pieter','sophie','lars','anna','tim','lisa','thomas','eva'], last: ['dejong','dejanssen','devries','bakker','visser','smit','meijer','bos'] },
+  { code: 'SE', flag: '🇸🇪', name: 'ស៊ុយអែត', ip: '185.76.64.1', first: ['erik','anna','lars','maria','anders','sara','johan','elin','oscar','emma'], last: ['johansson','andersson','karlsson','nilsson','eriksson','larsson','olsson','persson'] },
+  { code: 'PL', flag: '🇵🇱', name: 'ប៉ូឡូញ', ip: '185.93.168.1', first: ['jan','anna','piotr','maria','krzysztof','kasia','tomasz','agata','michal','natalia'], last: ['nowak','kowalski','wisniewski','wojcik','kaminski','kowalczyk','lewandowski','zielinski'] },
+  { code: 'AR', flag: '🇦🇷', name: 'អាហ្សង់ទីន', ip: '190.12.32.1', first: ['juan','maria','carlos','lucia','diego','camila','martin','sofia','pablo','valentina'], last: ['gonzalez','rodriguez','fernandez','lopez','martinez','sanchez','perez','garcia'] },
+];
+
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function randNum(digits) {
+  let s = '';
+  for (let i = 0; i < digits; i++) s += Math.floor(Math.random() * 10);
+  return s;
+}
+function onCountryChange() {
+  const c = COUNTRIES.find(x => x.code === $('countrySel').value) || COUNTRIES[0];
+  aiCountry = c;
+  $('ipLine').style.display = 'flex';
+  $('ipText').textContent = c.ip;
+  $('ipCountry').textContent = c.flag + ' ' + c.name;
+}
+function aiGenerate() {
+  const c = aiCountry || COUNTRIES[0];
+  const domain = domains[0] || 'fldubai.com';
+  const sep = pick(['.', '', '_']);
+  const style = Math.floor(Math.random() * 3);
+  let name;
+  if (style === 0) name = pick(c.first) + sep + pick(c.last) + randNum(2 + Math.floor(Math.random() * 3));
+  else if (style === 1) name = pick(c.first) + randNum(2) + sep + pick(c.last) + randNum(2);
+  else name = pick(c.first) + pick(c.last) + randNum(3);
+  name = cleanName(name);
+  aiName = name;
+  $('genPreview').style.display = 'block';
+  $('genPreview').innerHTML = esc(name + '@' + domain) + '<small>✨ ឈ្មោះតាមស្ទីល ' + esc(c.flag + ' ' + c.name) + ' — លាយលេខ មិនដូចគេ</small>';
+  onCountryChange();
+}
+async function createAiAddress() {
+  if (!aiName) { aiGenerate(); }
+  if (!aiName) return;
+  setStatus(false, 'កំពុងបង្កើត…');
+  try {
+    const a = await api('/api/address', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: aiName, domain: domains[0] || 'fldubai.com' }),
+    });
+    setActive(a);
+    toast('បង្កើត Gmail ថ្មីរួចហើយ ✓');
+  } catch (e) {
+    setStatus(false, 'មានបញ្ហា');
+    showErr('បង្កើតអាសយដ្ឋានមិនបាន៖ ' + e.message);
+  }
+}
+function initCountries() {
+  $('countrySel').innerHTML = COUNTRIES.map(c => '<option value="' + c.code + '">' + c.flag + ' ' + c.name + '</option>').join('');
+  aiCountry = COUNTRIES[0];
+  onCountryChange();
+}
+</script>
+
+<script>
 // ---- domains -------------------------------------------------------------
 async function loadDomains() {
   try {
     const d = await api('/api/domains');
     if (d.domains && d.domains.length) domains = d.domains;
   } catch (e) { /* keep default */ }
-  $('domainSel').innerHTML = domains.map(d => '<option value="' + d + '">@' + d + '</option>').join('');
   updatePreview();
 }
 
 // ---- address -------------------------------------------------------------
-async function createAddress() {
-  const domain = $('domainSel').value || domains[0];
-  const username = mode === 'custom' ? cleanName($('customName').value) : '';
-  if (mode === 'custom' && !username) { toast('សូមដាក់ឈ្មោះជាមុន'); return; }
-  closeSheet();
+async function createAddressWith(username) {
   setStatus(false, 'កំពុងបង្កើត…');
   try {
     const a = await api('/api/address', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: username || undefined, domain }),
+      body: JSON.stringify({ username: username || undefined, domain: domains[0] || 'fldubai.com' }),
     });
     setActive(a);
     toast('បង្កើតអាសយដ្ឋានថ្មីរួចហើយ ✓');
@@ -207,16 +339,18 @@ function setActive(a) {
   active = a;
   saveActive(a);
   $('activeAddr').textContent = a.address;
-  const v = loadVault();
-  if (!v.some(x => x.address === a.address)) {
-    v.unshift({ address: a.address, accountId: a.accountId, token: a.token, created: new Date().toISOString() });
-    saveVault(v);
-  }
-  $('delBtn').textContent = '🗑 លុប';
+  const item = { address: a.address, accountId: a.accountId, token: a.token, created: new Date().toISOString() };
+  const v = loadLs(LS_VAULT);
+  if (!v.some(x => x.address === a.address)) { v.unshift(item); saveLs(LS_VAULT, v); }
+  const h = loadLs(LS_HISTORY);
+  if (!h.some(x => x.address === a.address)) { h.unshift(item); saveLs(LS_HISTORY, h); }
+  saveLs(LS_DELETED, loadLs(LS_DELETED).filter(x => x.address !== a.address));
+  $('delBtn').textContent = '🗑 Delete';
   $('delBtn').classList.remove('armed');
   messages = []; openedId = null; currentOtp = '';
   $('otpCard').style.display = 'none';
-  renderVault();
+  renderListTab();
+  renderCreated();
   loadInbox(true);
   setStatus(true, 'រួចរាល់');
 }
@@ -233,68 +367,54 @@ async function deleteAddr() {
     delArmed = true;
     $('delBtn').textContent = 'ចុចម្ដងទៀតដើម្បីលុប';
     $('delBtn').classList.add('armed');
-    setTimeout(() => { delArmed = false; $('delBtn').textContent = '🗑 លុប'; $('delBtn').classList.remove('armed'); }, 4000);
+    setTimeout(() => { delArmed = false; $('delBtn').textContent = '🗑 Delete'; $('delBtn').classList.remove('armed'); }, 4000);
     return;
   }
   delArmed = false;
+  const gone = { address: active.address, accountId: active.accountId, token: active.token, created: new Date().toISOString() };
   try {
     await api('/api/address/' + encodeURIComponent(active.accountId), {
       method: 'DELETE',
       headers: { Authorization: 'Bearer ' + active.token },
     });
   } catch (e) { /* account may already be gone — continue locally */ }
-  const v = loadVault().filter(x => x.address !== active.address);
-  saveVault(v);
+  const d = loadLs(LS_DELETED);
+  if (!d.some(x => x.address === gone.address)) { d.unshift(gone); saveLs(LS_DELETED, d); }
+  saveLs(LS_VAULT, loadLs(LS_VAULT).filter(x => x.address !== active.address));
   saveActive(null);
   active = null;
   $('activeAddr').textContent = '—';
   messages = [];
   renderInbox();
   $('otpCard').style.display = 'none';
-  renderVault();
+  renderListTab();
+  renderCreated();
   toast('លុបអាសយដ្ឋានរួចហើយ');
   createAddressAuto();
 }
 
-async function createAddressAuto() {
-  try {
-    const a = await api('/api/address', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) });
-    setActive(a);
-  } catch (e) {
-    setStatus(false, 'មានបញ្ហា');
-    showErr('បង្កើតអាសយដ្ឋានមិនបាន៖ ' + e.message + ' — ចុច «អាសយដ្ឋានថ្មី» ដើម្បីសាកម្ដងទៀត។');
-  }
-}
+async function createAddressAuto() { await createAddressWith(''); }
 
-// ---- sheet ---------------------------------------------------------------
+// ---- custom name sheet ---------------------------------------------------
 function openSheet() { $('sheetBg').classList.add('open'); $('sheet').classList.add('open'); updatePreview(); }
 function closeSheet() { $('sheetBg').classList.remove('open'); $('sheet').classList.remove('open'); }
-function setMode(m) {
-  mode = m;
-  $('tabAuto').classList.toggle('on', m === 'auto');
-  $('tabCustom').classList.toggle('on', m === 'custom');
-  $('customBox').style.display = m === 'custom' ? 'block' : 'none';
-  updatePreview();
-}
 function updatePreview() {
-  const domain = $('domainSel').value || domains[0] || 'fldubai.com';
-  let preview, note = '';
-  if (mode === 'custom') {
-    const raw = $('customName').value || '';
-    const cleaned = cleanName(raw);
-    preview = (cleaned || 'ឈ្មោះរបស់អ្នក') + '@' + domain;
-    if (raw && cleaned !== raw.toLowerCase()) note = 'ឈ្មោះនឹងក្លាយជា «' + cleaned + '» — តួអក្សរដែលប្រើមិនបាននឹងត្រូវដកចេញ។';
-  } else {
-    preview = 'user••••••••••@' + domain;
-    note = 'ប្រព័ន្ធនឹងបង្កើតឈ្មោះដោយស្វ័យប្រវត្តិ។';
-  }
-  $('previewAddr').innerHTML = preview + (note ? '<small>' + note + '</small>' : '');
+  const domain = domains[0] || 'fldubai.com';
+  const raw = $('customName').value || '';
+  const cleaned = cleanName(raw);
+  $('previewAddr').innerHTML = esc((cleaned || 'ឈ្មោះរបស់អ្នក') + '@' + domain)
+    + (raw && cleaned !== raw.toLowerCase() ? '<small>ឈ្មោះនឹងក្លាយជា «' + esc(cleaned) + '» — តួអក្សរដែលប្រើមិនបាននឹងត្រូវដកចេញ។</small>' : '');
+}
+async function createCustomAddress() {
+  const username = cleanName($('customName').value);
+  if (!username) { toast('សូមដាក់ឈ្មោះជាមុន'); return; }
+  closeSheet();
+  await createAddressWith(username);
 }
 
 // ---- inbox ---------------------------------------------------------------
 function findOtp(text) {
   if (!text) return '';
-  // common OTP patterns: "code is 123456", "123456 is your code", standalone 4-8 digits
   const patterns = [
     /(?:code|otp|verification|verify|password)[^\d]{0,30}(\d{4,8})/i,
     /(\d{4,8})[^\d]{0,30}(?:code|otp|verification|is your)/i,
@@ -307,6 +427,16 @@ function findOtp(text) {
   }
   return '';
 }
+function logoFor(fromAddr) {
+  const dom = String(fromAddr || '').split('@')[1] || '';
+  if (!dom) return null;
+  return 'https://www.google.com/s2/favicons?domain=' + encodeURIComponent(dom) + '&sz=64';
+}
+function logoHtml(fromAddr, letter) {
+  const url = logoFor(fromAddr);
+  if (!url) return esc(letter || '?');
+  return '<img src="' + url + '" alt="" onerror="this.parentNode.textContent=\'' + esc(letter || '?') + '\'">';
+}
 
 async function loadInbox(manual) {
   if (!active) return;
@@ -315,14 +445,14 @@ async function loadInbox(manual) {
     const prevCount = messages.length;
     messages = d.messages || [];
     renderInbox();
-    // OTP: check newest messages first
     for (const m of messages) {
       const otp = findOtp((m.subject || '') + ' ' + (m.intro || ''));
       if (otp) {
         if (otp !== currentOtp) {
           currentOtp = otp;
           $('otpCode').textContent = otp;
-          $('otpFrom').textContent = 'ពី៖ ' + (m.from && (m.from.address || m.from.name) ? (m.from.address || m.from.name) : 'សំបុត្រថ្មី');
+          const from = (m.from && (m.from.address || m.from.name)) || 'សំបុត្រថ្មី';
+          $('otpFrom').innerHTML = '<span class="msg-logo" style="width:22px;height:22px;border-radius:5px">' + logoHtml(from, (from[0] || '?').toUpperCase()) + '</span> ពី៖ ' + esc(from);
           $('otpCard').style.display = 'block';
         }
         break;
@@ -340,7 +470,6 @@ async function loadInbox(manual) {
 function fmtDate(s) {
   try { return new Date(s).toLocaleString('km-KH', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' }); } catch (e) { return s || ''; }
 }
-function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
 function renderInbox() {
   const box = $('inboxList');
@@ -354,15 +483,24 @@ function renderInbox() {
   c.textContent = messages.length;
   box.innerHTML = messages.map(m => {
     const from = (m.from && (m.from.address || m.from.name)) || 'មិនស្គាល់';
+    const letter = (from[0] || '?').toUpperCase();
+    const otp = findOtp((m.subject || '') + ' ' + (m.intro || ''));
     const open = openedId === m.id;
     return '<div class="msg' + (open ? ' unread' : '') + '" onclick="toggleMsg(\'' + m.id + '\')">'
-      + '<div class="from">' + esc(from) + '</div>'
+      + '<div class="msg-top"><div class="msg-logo">' + logoHtml(from, letter) + '</div>'
+      + '<div class="msg-main"><div class="from">' + esc(from) + '</div>'
       + '<div class="subject">' + esc(m.subject || '(គ្មានចំណងជើង)') + '</div>'
       + '<div class="intro">' + esc(m.intro || '') + '</div>'
-      + '<div class="date">' + esc(fmtDate(m.date)) + '</div>'
+      + '<div class="date">' + esc(fmtDate(m.date)) + '</div></div></div>'
+      + (otp ? '<div class="msg-otp" onclick="event.stopPropagation()">🔑 ' + esc(otp) + ' <button class="btn-primary" onclick="copyCode(\'' + esc(otp) + '\', event)">Copy Code</button></div>' : '')
       + (open ? '<div class="msg-body" id="body-' + m.id + '">កំពុងបើក…</div>' : '')
       + '</div>';
   }).join('');
+}
+
+function copyCode(code, ev) {
+  if (ev) ev.stopPropagation();
+  navigator.clipboard.writeText(code).then(() => toast('ចម្លងកូដរួចហើយ ✓'));
 }
 
 async function toggleMsg(id) {
@@ -374,10 +512,14 @@ async function toggleMsg(id) {
     const el = $('body-' + id);
     if (!el) return;
     const otp = findOtp((m.subject || '') + ' ' + (m.text || ''));
-    let html = '';
-    if (otp) { currentOtp = otp; $('otpCode').textContent = otp; $('otpFrom').textContent = 'ពី៖ ' + esc((m.from && m.from.address) || ''); $('otpCard').style.display = 'block'; }
-    html += '<div style="white-space:pre-wrap;word-break:break-word">' + esc(m.text || '(គ្មានខ្លឹមសារ)') + '</div>';
-    el.innerHTML = html;
+    if (otp) {
+      currentOtp = otp;
+      $('otpCode').textContent = otp;
+      const from = (m.from && m.from.address) || '';
+      $('otpFrom').innerHTML = '<span class="msg-logo" style="width:22px;height:22px;border-radius:5px">' + logoHtml(from, (from[0] || '?').toUpperCase()) + '</span> ពី៖ ' + esc(from);
+      $('otpCard').style.display = 'block';
+    }
+    el.innerHTML = '<div style="white-space:pre-wrap;word-break:break-word">' + esc(m.text || '(គ្មានខ្លឹមសារ)') + '</div>';
   } catch (e) {
     const el = $('body-' + id);
     if (el) el.textContent = 'បើកសំបុត្រមិនបាន៖ ' + e.message;
@@ -389,38 +531,95 @@ function copyOtp() {
   navigator.clipboard.writeText(currentOtp).then(() => toast('ចម្លង OTP រួចហើយ ✓'));
 }
 
-// ---- vault ---------------------------------------------------------------
-function renderVault() {
-  const v = loadVault();
-  const box = $('vaultList');
-  if (!v.length) { box.innerHTML = '<div class="vault-empty">មិនទាន់មានអាសយដ្ឋានរក្សាទុកទេ</div>'; return; }
-  box.innerHTML = v.map(x => {
+// ---- Saved / History / Deleted tabs --------------------------------------
+function setListTab(t) {
+  listTab = t;
+  $('tabSaved').classList.toggle('on', t === 'saved');
+  $('tabHistory').classList.toggle('on', t === 'history');
+  $('tabDeleted').classList.toggle('on', t === 'deleted');
+  renderListTab();
+}
+function renderListTab() {
+  const box = $('listBox');
+  let items = [], emptyMsg = '', isDeleted = false;
+  if (listTab === 'saved') { items = loadLs(LS_VAULT); emptyMsg = 'មិនទាន់មានអាសយដ្ឋានរក្សាទុកទេ'; }
+  else if (listTab === 'history') { items = loadLs(LS_HISTORY); emptyMsg = 'មិនទាន់មានប្រវត្តិទេ'; }
+  else { items = loadLs(LS_DELETED); emptyMsg = 'មិនទាន់មានអាសយដ្ឋានដែលបានលុបទេ'; isDeleted = true; }
+  if (!items.length) { box.innerHTML = '<div class="vault-empty">' + emptyMsg + '</div>'; return; }
+  box.innerHTML = items.map(x => {
     const isActive = active && x.address === active.address;
     return '<div class="vault-item' + (isActive ? ' active' : '') + '">'
       + '<div><div class="a">' + esc(x.address) + '</div><div class="b">' + (isActive ? '● កំពុងប្រើ' : esc(fmtDate(x.created))) + '</div></div>'
       + '<div style="display:flex;gap:6px;flex:none">'
-      + (isActive ? '' : '<button class="btn-ghost btn-small" onclick="restoreAddr(\'' + esc(x.address) + '\')">ប្រើវិញ</button>')
-      + '<button class="btn-ghost btn-small" onclick="removeVault(\'' + esc(x.address) + '\')">✕</button>'
+      + (isDeleted
+          ? '<button class="btn-ghost btn-small" onclick="restoreDeleted(\'' + esc(x.address) + '\')">↩ ស្ដារ</button>'
+          : (isActive ? '' : '<button class="btn-ghost btn-small" onclick="restoreAddr(\'' + esc(x.address) + '\')">ប្រើវិញ</button>'))
+      + '<button class="btn-ghost btn-small" onclick="copyText(\'' + esc(x.address) + '\')">📋</button>'
+      + '<button class="btn-ghost btn-small" onclick="removeFromList(\'' + esc(x.address) + '\', ' + isDeleted + ')">✕</button>'
       + '</div></div>';
   }).join('');
 }
-
+function copyText(t) { navigator.clipboard.writeText(t).then(() => toast('ចម្លងរួចហើយ ✓')); }
 function restoreAddr(address) {
-  const v = loadVault();
-  const item = v.find(x => x.address === address);
+  const item = loadLs(LS_VAULT).find(x => x.address === address) || loadLs(LS_HISTORY).find(x => x.address === address);
   if (!item) return;
   setActive({ address: item.address, accountId: item.accountId, token: item.token });
   toast('បើកអាសយដ្ឋានចាស់វិញរួចហើយ ✓');
 }
-function removeVault(address) {
-  saveVault(loadVault().filter(x => x.address !== address));
-  renderVault();
+function restoreDeleted(address) {
+  const item = loadLs(LS_DELETED).find(x => x.address === address);
+  if (!item) return;
+  saveLs(LS_DELETED, loadLs(LS_DELETED).filter(x => x.address !== address));
+  const v = loadLs(LS_VAULT);
+  if (!v.some(x => x.address === address)) { v.unshift(item); saveLs(LS_VAULT, v); }
+  setActive({ address: item.address, accountId: item.accountId, token: item.token });
+  toast('ស្ដារអាសយដ្ឋានវិញរួចហើយ ✓');
+}
+function removeFromList(address, isDeleted) {
+  if (isDeleted) saveLs(LS_DELETED, loadLs(LS_DELETED).filter(x => x.address !== address));
+  else {
+    saveLs(LS_VAULT, loadLs(LS_VAULT).filter(x => x.address !== address));
+    saveLs(LS_HISTORY, loadLs(LS_HISTORY).filter(x => x.address !== address));
+  }
+  renderListTab();
+  renderCreated();
+}
+
+// ---- created Gmail list --------------------------------------------------
+function renderCreated() {
+  const items = loadLs(LS_HISTORY);
+  const box = $('createdList');
+  $('createdCount').textContent = items.length ? items.length + ' អាសយដ្ឋាន' : '';
+  if (!items.length) { box.innerHTML = '<div class="vault-empty">មិនទាន់បានបង្កើត Gmail ទេ</div>'; return; }
+  box.innerHTML = items.map(x => {
+    const isActive = active && x.address === active.address;
+    return '<div class="vault-item' + (isActive ? ' active' : '') + '">'
+      + '<div><div class="a">' + esc(x.address) + '</div><div class="b">' + (isActive ? '● កំពុងប្រើ' : esc(fmtDate(x.created))) + '</div></div>'
+      + '<div style="display:flex;gap:6px;flex:none">'
+      + (isActive ? '' : '<button class="btn-ghost btn-small" onclick="restoreAddr(\'' + esc(x.address) + '\')">ប្រើ</button>')
+      + '<button class="btn-ghost btn-small" onclick="copyText(\'' + esc(x.address) + '\')">📋 Copy</button>'
+      + '<button class="btn-ghost btn-small" onclick="signupWith(\'' + esc(x.address) + '\')">🚀 Sign Up</button>'
+      + '</div></div>';
+  }).join('');
+}
+
+// ---- Sign Up -------------------------------------------------------------
+function signup(url) {
+  if (active) navigator.clipboard.writeText(active.address).catch(() => {});
+  toast('ចម្លង Gmail រួចហើយ — បើកទំព័រចុះឈ្មោះ…');
+  setTimeout(() => window.open(url, '_blank'), 400);
+}
+function signupWith(address) {
+  navigator.clipboard.writeText(address).catch(() => {});
+  toast('ចម្លង ' + address + ' រួចហើយ ✓');
 }
 
 // ---- boot ----------------------------------------------------------------
 (async function boot() {
+  initCountries();
   await loadDomains();
-  renderVault();
+  renderListTab();
+  renderCreated();
   const saved = loadActive();
   if (saved && saved.address && saved.token) {
     active = saved;
