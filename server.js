@@ -14,6 +14,16 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+// Never cache the app page itself, so updates (like a new logo) show up
+// immediately instead of the phone showing an old saved copy.
+app.use((req, res, next) => {
+  if (req.path === '/' || req.path.endsWith('.html')) {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+  }
+  next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ---- helpers -------------------------------------------------------------

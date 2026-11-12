@@ -175,24 +175,15 @@
   <defs>
     <linearGradient id="tmEnv" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#2563eb"/>
-      <stop offset="55%" stop-color="#4f46e5"/>
-      <stop offset="100%" stop-color="#7c3aed"/>
+      <stop offset="50%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#22c55e"/>
     </linearGradient>
     <linearGradient id="tmFlap" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#a5bcf9"/>
-      <stop offset="100%" stop-color="#6366f1"/>
+      <stop offset="0%" stop-color="#a5f3fc"/>
+      <stop offset="100%" stop-color="#2dd4bf"/>
     </linearGradient>
     <clipPath id="envClip"><rect x="20" y="38" width="80" height="50" rx="7"/></clipPath>
   </defs>
-  <symbol id="tmLogo" viewBox="0 0 120 120">
-    <rect x="4" y="4" width="112" height="112" rx="26" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
-    <g clip-path="url(#envClip)">
-      <rect x="20" y="38" width="80" height="50" fill="url(#tmEnv)"/>
-      <path d="M20 38 L60 70 L100 38 Z" fill="url(#tmFlap)"/>
-      <path d="M20 88 L60 70 L100 88 Z" fill="#1e1b4b" opacity="0.12"/>
-    </g>
-    <text x="60" y="76" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="800" fill="#ffffff" text-anchor="middle">T</text>
-  </symbol>
   <symbol id="gLogo" viewBox="0 0 48 48">
     <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303C33.654,32.657,29.223,36,24,36c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
     <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
@@ -203,7 +194,7 @@
 <div class="wrap">
   <header>
     <div style="display:flex;align-items:center;gap:9px">
-      <svg width="34" height="34" viewBox="0 0 120 120" style="flex:none;border-radius:9px;box-shadow:0 2px 8px rgba(37,99,235,.25)"><use href="#tmLogo"/></svg>
+      <svg width="42" height="42" viewBox="0 0 120 120" style="flex:none;border-radius:11px;box-shadow:0 2px 8px rgba(6,182,212,.3)"><rect x="4" y="4" width="112" height="112" rx="26" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/><g clip-path="url(#envClip)"><rect x="20" y="38" width="80" height="50" fill="url(#tmEnv)"/><path d="M20 38 L60 70 L100 38 Z" fill="url(#tmFlap)"/><path d="M20 88 L60 70 L100 88 Z" fill="#1e1b4b" opacity="0.12"/></g><text x="60" y="76" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="800" fill="#ffffff" text-anchor="middle">T</text></svg>
       <div class="logo">TempMail</div>
     </div>
     <div style="display:flex;gap:8px;align-items:center">
@@ -296,7 +287,7 @@
     <div id="authCard"></div>
     <div class="card">
       <div style="display:flex;gap:12px;align-items:center">
-        <div style="width:52px;height:52px;border-radius:14px;overflow:hidden;flex:none;box-shadow:0 2px 8px rgba(37,99,235,.2)"><svg width="52" height="52" viewBox="0 0 120 120"><use href="#tmLogo"/></svg></div>
+        <div style="width:52px;height:52px;border-radius:14px;overflow:hidden;flex:none;box-shadow:0 2px 8px rgba(6,182,212,.25)"><svg width="52" height="52" viewBox="0 0 120 120"><rect x="4" y="4" width="112" height="112" rx="26" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/><g clip-path="url(#envClip)"><rect x="20" y="38" width="80" height="50" fill="url(#tmEnv)"/><path d="M20 38 L60 70 L100 38 Z" fill="url(#tmFlap)"/><path d="M20 88 L60 70 L100 88 Z" fill="#1e1b4b" opacity="0.12"/></g><text x="60" y="76" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="800" fill="#ffffff" text-anchor="middle">T</text></svg></div>
         <div style="flex:1">
           <div style="font-size:18px;font-weight:800">TempMail</div>
           <div style="font-size:13px;color:var(--sub)" data-i18n="free_forever">Free forever · No ads</div>
@@ -407,7 +398,7 @@
   <div style="max-width:560px;margin:0 auto;padding:14px 16px 40px">
     <button class="icon-btn" onclick="closeAuth()">‹</button>
     <div style="text-align:center;padding:16px 0 8px">
-      <div style="width:88px;height:88px;margin:0 auto 18px;border-radius:22px;box-shadow:0 4px 16px rgba(0,0,0,.12);overflow:hidden"><svg width="88" height="88" viewBox="0 0 120 120"><use href="#tmLogo"/></svg></div>
+      <div style="width:88px;height:88px;margin:0 auto 18px;border-radius:22px;box-shadow:0 4px 16px rgba(0,0,0,.12);overflow:hidden"><svg width="88" height="88" viewBox="0 0 120 120"><rect x="4" y="4" width="112" height="112" rx="26" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/><g clip-path="url(#envClip)"><rect x="20" y="38" width="80" height="50" fill="url(#tmEnv)"/><path d="M20 38 L60 70 L100 38 Z" fill="url(#tmFlap)"/><path d="M20 88 L60 70 L100 88 Z" fill="#1e1b4b" opacity="0.12"/></g><text x="60" y="76" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="800" fill="#ffffff" text-anchor="middle">T</text></svg></div>
       <h2 id="authTitle" style="font-size:28px">Create Account</h2>
       <p id="authSub" style="color:var(--sub);font-size:15px;margin-top:6px">Sign up free — no credit card needed.</p>
     </div>
