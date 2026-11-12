@@ -193,6 +193,12 @@
     </g>
     <text x="60" y="76" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="800" fill="#ffffff" text-anchor="middle">T</text>
   </symbol>
+  <symbol id="gLogo" viewBox="0 0 48 48">
+    <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303C33.654,32.657,29.223,36,24,36c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+    <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+    <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+    <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+  </symbol>
 </svg>
 <div class="wrap">
   <header>
@@ -329,6 +335,11 @@
         <div class="set-main"><div class="t">Language</div><div class="s" id="langSub">Choose the language</div></div>
         <span class="set-val" id="langVal">ខ្មែរ</span>
       </div>
+      <div class="set-row" onclick="openGcidSheet()">
+        <div class="set-ico" style="background:#fff;border:1px solid var(--border)"><svg width="20" height="20" viewBox="0 0 48 48"><use href="#gLogo"/></svg></div>
+        <div class="set-main"><div class="t">Continue with Google</div><div class="s">Google Client ID — សម្រាប់ចូលដោយ Google</div></div>
+        <span class="set-val" id="gcidVal">Off</span>
+      </div>
     </div>
 
     <div class="sec-label">More</div>
@@ -414,6 +425,8 @@
       <p class="note">Use at least 8 characters, including a number.</p>
       <label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;margin:12px 0;cursor:pointer"><input type="checkbox" id="cuTerms" class="auth-check"> <span>I agree to the <span style="color:#2563eb">Terms of Service</span> and <span style="color:#2563eb">Privacy Policy</span></span></label>
       <button class="btn-primary" style="width:100%;padding:15px;font-size:16px;border-radius:999px" onclick="doCreateAccount()">Create Account</button>
+      <div style="display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--sub);font-size:14px"><div style="flex:1;height:1px;background:var(--border)"></div>or<div style="flex:1;height:1px;background:var(--border)"></div></div>
+      <button class="btn-ghost" style="width:100%;padding:14px;font-size:16px;border-radius:999px;background:#fff;color:#1c1c1e;display:flex;align-items:center;justify-content:center;gap:10px" onclick="doGoogleSignIn()"><svg width="20" height="20" viewBox="0 0 48 48"><use href="#gLogo"/></svg> Continue with Google</button>
       <p style="text-align:center;margin-top:18px;color:var(--sub);font-size:14px">Already have an account? <span style="color:#2563eb;font-weight:700;cursor:pointer" onclick="showAuth('signin')">Sign In</span></p>
     </div>
 
@@ -428,6 +441,8 @@
         <span style="color:#2563eb;font-weight:700;font-size:14px;cursor:pointer" onclick="showAuth('forgot')">Forgot password?</span>
       </div>
       <button class="btn-primary" style="width:100%;padding:15px;font-size:16px;border-radius:999px" onclick="doSignIn()">Sign In</button>
+      <div style="display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--sub);font-size:14px"><div style="flex:1;height:1px;background:var(--border)"></div>or<div style="flex:1;height:1px;background:var(--border)"></div></div>
+      <button class="btn-ghost" style="width:100%;padding:14px;font-size:16px;border-radius:999px;background:#fff;color:#1c1c1e;display:flex;align-items:center;justify-content:center;gap:10px" onclick="doGoogleSignIn()"><svg width="20" height="20" viewBox="0 0 48 48"><use href="#gLogo"/></svg> Continue with Google</button>
       <p style="text-align:center;margin-top:18px;color:var(--sub);font-size:14px">Don't have an account? <span style="color:#2563eb;font-weight:700;cursor:pointer" onclick="showAuth('create')">Create account</span></p>
     </div>
 
@@ -444,6 +459,17 @@
     </div>
 
     <p id="authErr" style="color:#dc2626;font-size:14px;text-align:center;margin-top:14px;display:none"></p>
+  </div>
+</div>
+
+<div class="sheet" id="gcidSheet">
+  <h3>Continue with Google</h3>
+  <label>Google Client ID (Web application — OAuth 2.0)</label>
+  <input id="gcidInput" placeholder="ឧ. 123456789012-abc.apps.googleusercontent.com" autocomplete="off">
+  <div class="note" style="margin:0 0 12px">យក Client ID ពី Google Cloud Console → APIs &amp; Services → Credentials → Create Credentials → OAuth client ID (Web application) ហើយដាក់ Authorized JavaScript origins = <b id="gcidOrigin"></b>។ រួចចម្លង Client ID មកដាក់ទីនេះ។</div>
+  <div class="row">
+    <button class="btn-ghost" onclick="closeAllSheets()">បោះបង់</button>
+    <button class="btn-primary" onclick="saveGcid()">រក្សាទុក</button>
   </div>
 </div>
 
@@ -1138,6 +1164,82 @@ function renderAuthCard() {
 }
 session = getSession();
 renderAuthCard();
+</script>
+<script>
+// ---- Continue with Google (Google Identity Services) ----------------------
+const LS_GCID = 'tempmail_google_client_id';
+let gsiLoaded = false;
+function getGoogleClientId() { return (localStorage.getItem(LS_GCID) || '').trim(); }
+function renderGcidVal() {
+  const el = $('gcidVal');
+  if (el) el.textContent = getGoogleClientId() ? 'On' : 'Off';
+  const o = $('gcidOrigin');
+  if (o) o.textContent = location.origin;
+}
+function openGcidSheet() {
+  $('gcidInput').value = getGoogleClientId();
+  renderGcidVal();
+  openSheetEl('gcidSheet');
+}
+function saveGcid() {
+  const v = $('gcidInput').value.trim();
+  if (v) localStorage.setItem(LS_GCID, v);
+  else localStorage.removeItem(LS_GCID);
+  closeAllSheets();
+  renderGcidVal();
+  toast(v ? 'រក្សាទុក Client ID រួចហើយ ✓' : 'លុប Client ID រួចហើយ');
+}
+function loadGsi() {
+  return new Promise((resolve, reject) => {
+    if (window.google && google.accounts) return resolve();
+    const s = document.createElement('script');
+    s.src = 'https://accounts.google.com/gsi/client';
+    s.async = true; s.defer = true;
+    s.onload = () => { gsiLoaded = true; resolve(); };
+    s.onerror = () => reject(new Error('load failed'));
+    document.head.appendChild(s);
+  });
+}
+function decodeJwt(t) {
+  try {
+    const p = t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(atob(p + '='.repeat((4 - p.length % 4) % 4)));
+  } catch (e) { return null; }
+}
+async function doGoogleSignIn() {
+  const cid = getGoogleClientId();
+  if (!cid) {
+    showAuthErr('Google Sign-In ត្រូវការ Client ID ជាមុន — សូមដាក់វានៅ Settings → Continue with Google');
+    return;
+  }
+  try {
+    await loadGsi();
+    google.accounts.id.initialize({
+      client_id: cid,
+      callback: async (res) => {
+        const data = decodeJwt(res.credential);
+        if (!data || !data.email) { showAuthErr('Google Sign-In បរាជ័យ'); return; }
+        const email = String(data.email).toLowerCase();
+        const name = data.name || email.split('@')[0];
+        const users = getUsers();
+        let u = users.find(x => x.email === email);
+        if (!u) {
+          const salt = makeSalt();
+          const hash = await hashPw(salt, 'google-' + Math.random().toString(36).slice(2) + Date.now());
+          u = { name, email, salt, hash, google: true, created: new Date().toISOString() };
+          users.push(u); saveUsers(users);
+        }
+        setSession({ name: u.name, email: u.email }, true);
+        closeAuth();
+        toast('ចូលដោយ Google រួចហើយ ✓ ស្វាគមន៍ ' + u.name);
+      }
+    });
+    google.accounts.id.prompt();
+  } catch (e) {
+    showAuthErr('បើក Google Sign-In មិនបាន៖ ' + e.message);
+  }
+}
+renderGcidVal();
 </script>
 </body>
 </html>
