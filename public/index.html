@@ -5,181 +5,357 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>TempMail</title>
 <style>
+  :root {
+    --bg: #f2f2f7; --card: #ffffff; --text: #1c1c1e; --sub: #71717a; --border: #e4e4e7;
+    --blue: #2563eb; --purple: #7c3aed; --orange: #f59e0b; --orange2: #f97316;
+    --gold-bg: #fef3c7; --gold-border: #fde68a; --gold-text: #92400e;
+    --nav-bg: rgba(255,255,255,.96); --field: #f4f4f5; --danger: #dc2626;
+  }
+  body.dark {
+    --bg: #0f0f12; --card: #1c1c1e; --text: #f4f4f5; --sub: #a1a1aa; --border: #2e2e32;
+    --nav-bg: rgba(28,28,30,.96); --field: #27272a; --gold-bg: #451a03; --gold-border: #78350f; --gold-text: #fde68a;
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body {
     font-family: "Noto Sans Khmer", "Kantumruy Pro", system-ui, -apple-system, sans-serif;
-    background: linear-gradient(180deg, #fff3e6 0%, #ffe4d1 45%, #ffd9c2 100%);
-    background-attachment: fixed;
-    color: #1c1c1e; min-height: 100vh;
+    background: var(--bg); color: var(--text); min-height: 100vh;
   }
-  .wrap { max-width: 560px; margin: 0 auto; padding: 16px 14px 48px; }
-  header { display: flex; align-items: center; justify-content: space-between; padding: 6px 2px 14px; }
-  header h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.3px; color: #7c2d12; }
-  .status { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #555; background: #fff; border: 1px solid #fed7aa; border-radius: 999px; padding: 6px 12px; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.18); }
-  .dot.off { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.15); }
-  .card { background: #fff; border: 1px solid #ffedd5; border-radius: 18px; padding: 16px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(234,88,12,.08); }
-  .label { font-size: 12px; color: #9a3412; margin-bottom: 6px; font-weight: 700; }
-  .addr { font-size: 17px; font-weight: 700; word-break: break-all; line-height: 1.4; margin-bottom: 14px; }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 12px 16px 120px; }
+  /* header */
+  header { display: flex; align-items: center; justify-content: space-between; padding: 8px 2px 14px; position: sticky; top: 0; background: var(--bg); z-index: 20; }
+  .logo { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(90deg, var(--blue), var(--purple)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .icon-btn { width: 44px; height: 44px; border-radius: 50%; border: none; background: var(--card); color: var(--text); font-size: 20px; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.1); display: inline-flex; align-items: center; justify-content: center; }
+  .icon-btn:active { transform: scale(.94); }
+  /* pages */
+  .page { display: none; }
+  .page.active { display: block; }
+  .page-title { font-size: 15px; color: var(--sub); margin: 2px 2px 12px; }
+  /* cards */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+  .label { font-size: 12px; color: var(--sub); margin-bottom: 6px; font-weight: 700; }
+  /* blue address card */
+  .addr-card { background: linear-gradient(135deg, #1d4ed8, #4f46e5 55%, #7c3aed); color: #fff; border: none; border-radius: 24px; padding: 20px; margin-bottom: 14px; box-shadow: 0 8px 20px rgba(79,70,229,.35); }
+  .addr-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .addr-top .t { font-size: 15px; color: rgba(255,255,255,.85); font-weight: 600; }
+  .free-badge { background: rgba(255,255,255,.25); color: #fff; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; }
+  .addr-big { font-size: 25px; font-weight: 800; word-break: break-all; line-height: 1.25; margin-bottom: 8px; }
+  .addr-active { font-size: 14px; color: rgba(255,255,255,.9); display: flex; align-items: center; gap: 7px; margin-bottom: 16px; }
+  .green-dot { width: 9px; height: 9px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 0 3px rgba(74,222,128,.3); }
+  .addr-actions { display: flex; justify-content: space-around; }
+  .addr-act { background: none; border: none; color: #fff; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; }
+  .addr-act .circle { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,.22); display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .addr-act:active .circle { background: rgba(255,255,255,.35); }
+  /* pills */
+  .pills { display: flex; gap: 10px; margin-bottom: 14px; }
+  .pills > * { flex: 1; }
+  .pill { font-family: inherit; font-size: 16px; font-weight: 700; border: none; border-radius: 999px; padding: 15px 10px; cursor: pointer; color: #fff; }
+  .pill:active { transform: scale(.97); }
+  .pill-blue { background: linear-gradient(135deg, var(--blue), #4f46e5); }
+  .pill-orange { background: linear-gradient(135deg, var(--orange), var(--orange2)); }
+  /* AI card */
+  .country-sel { width: 100%; font-family: inherit; font-size: 16px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; background: var(--card); color: var(--text); }
+  .ip-line { display: flex; align-items: center; gap: 8px; background: var(--field); border: 1px dashed var(--border); border-radius: 12px; padding: 10px 12px; font-size: 13px; margin-top: 10px; color: var(--text); }
+  .ip-line b { font-size: 14px; }
+  /* OTP card */
+  .otp-card { background: linear-gradient(135deg, #fff7ed, #ffedd5); border: 1px solid #fdba74; }
+  body.dark .otp-card { background: linear-gradient(135deg, #451a03, #7c2d12); border-color: #9a3412; }
+  .otp-code { font-size: 32px; font-weight: 800; letter-spacing: 5px; text-align: center; margin: 4px 0 10px; color: #7c2d12; }
+  body.dark .otp-code { color: #ffedd5; }
+  .otp-from { font-size: 13px; color: #9a3412; text-align: center; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  body.dark .otp-from { color: #fdba74; }
+  .otp-from img { width: 22px; height: 22px; border-radius: 5px; }
+  /* premium gold card */
+  .gold-card { background: linear-gradient(135deg, var(--gold-bg), #fde68a); border: 1px solid var(--gold-border); border-radius: 20px; padding: 18px; margin-bottom: 14px; color: var(--gold-text); }
+  body.dark .gold-card { background: linear-gradient(135deg, #451a03, #78350f); }
+  .gold-card h3 { font-size: 20px; margin: 6px 0 10px; }
+  .gold-check { display: flex; align-items: center; gap: 9px; font-size: 14.5px; font-weight: 600; margin-bottom: 7px; }
+  .gold-check .ck { width: 22px; height: 22px; border-radius: 50%; background: #22c55e; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; flex: none; }
+  .gold-btn { width: 100%; font-family: inherit; font-size: 16px; font-weight: 700; border: none; border-radius: 999px; padding: 14px; cursor: pointer; background: linear-gradient(135deg, var(--orange), var(--orange2)); color: #fff; margin-top: 10px; }
+  .com-badge { display: inline-block; background: var(--orange); color: #fff; font-weight: 800; font-size: 15px; padding: 5px 12px; border-radius: 10px; transform: rotate(-4deg); }
+  /* buttons */
+  button { font-family: inherit; }
+  .btn-primary { background: linear-gradient(135deg, var(--blue), #4f46e5); color: #fff; font-size: 15px; font-weight: 700; border: none; border-radius: 12px; padding: 12px 10px; cursor: pointer; }
+  .btn-ghost { background: var(--field); color: var(--text); border: 1px solid var(--border); font-size: 15px; font-weight: 700; border-radius: 12px; padding: 12px 10px; cursor: pointer; }
+  .btn-danger { background: var(--card); color: var(--danger); border: 1px solid #fecaca; font-size: 15px; font-weight: 700; border-radius: 12px; padding: 12px 10px; cursor: pointer; }
+  .btn-danger.armed { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .btn-small { padding: 8px 12px; font-size: 13px; border-radius: 999px; flex: none; }
+  button:active { transform: scale(.97); }
   .row { display: flex; gap: 8px; }
   .row > * { flex: 1; }
-  button { font-family: inherit; font-size: 15px; font-weight: 700; border: none; border-radius: 12px; padding: 12px 10px; cursor: pointer; }
-  button:active { transform: scale(.97); }
-  .btn-primary { background: linear-gradient(135deg, #ff6a00, #ff8c42); color: #fff; }
-  .btn-ai { background: linear-gradient(135deg, #ea580c, #f472b6); color: #fff; width: 100%; font-size: 16px; padding: 14px; }
-  .btn-ghost { background: #fff7ed; color: #7c2d12; border: 1px solid #fed7aa; }
-  .btn-danger { background: #fff; color: #dc2626; border: 1px solid #fecaca; }
-  .btn-danger.armed { background: #dc2626; color: #fff; border-color: #dc2626; }
-  .btn-small { padding: 8px 12px; font-size: 13px; border-radius: 999px; flex: none; }
-  .note { font-size: 12.5px; color: #9a3412; line-height: 1.6; margin-top: 12px; opacity: .85; }
-  .otp-card { background: linear-gradient(135deg, #fff7ed, #ffedd5); border: 1px solid #fdba74; }
-  .otp-card .label { color: #c2410c; }
-  .otp-code { font-size: 32px; font-weight: 800; letter-spacing: 5px; text-align: center; margin: 4px 0 10px; color: #7c2d12; }
-  .otp-from { font-size: 13px; color: #9a3412; text-align: center; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-  .otp-from img { width: 22px; height: 22px; border-radius: 5px; }
-  .inbox-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  .inbox-head h2 { font-size: 17px; color: #7c2d12; }
-  .count { background: #ff6a00; color: #fff; font-size: 12px; font-weight: 800; min-width: 22px; height: 22px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; padding: 0 6px; margin-left: 6px; vertical-align: 2px; }
-  .msg { border: 1px solid #ffedd5; border-radius: 14px; padding: 12px; margin-bottom: 8px; cursor: pointer; background: #fff; }
-  .msg.unread { border-color: #ff6a00; background: #fffaf5; }
+  .note { font-size: 12.5px; color: var(--sub); line-height: 1.6; margin-top: 12px; }
+  /* inbox */
+  .filter-pills { display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; }
+  .filter-pills button { flex: none; font-family: inherit; font-size: 14px; font-weight: 700; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--border); background: var(--card); color: var(--sub); cursor: pointer; }
+  .filter-pills button.on { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .msg { border: 1px solid var(--border); border-radius: 14px; padding: 12px; margin-bottom: 8px; cursor: pointer; background: var(--card); }
+  .msg.unread { border-color: var(--blue); background: #eff6ff; }
+  body.dark .msg.unread { background: #1e3a5f; }
   .msg-top { display: flex; gap: 10px; align-items: flex-start; }
-  .msg-logo { width: 38px; height: 38px; border-radius: 10px; flex: none; background: #fff7ed; border: 1px solid #ffedd5; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; color: #ea580c; overflow: hidden; }
+  .msg-logo { width: 38px; height: 38px; border-radius: 10px; flex: none; background: var(--field); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; color: var(--blue); overflow: hidden; }
   .msg-logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
   .msg-main { flex: 1; min-width: 0; }
   .msg .from { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
   .msg .subject { font-size: 14px; margin-bottom: 2px; }
-  .msg .intro { font-size: 13px; color: #71717a; line-height: 1.5; }
-  .msg .date { font-size: 11px; color: #a1a1aa; margin-top: 6px; }
+  .msg .intro { font-size: 13px; color: var(--sub); line-height: 1.5; }
+  .msg .date { font-size: 11px; color: var(--sub); margin-top: 6px; opacity: .8; }
   .msg-otp { display: inline-flex; align-items: center; gap: 6px; background: #fff7ed; border: 1px solid #fdba74; border-radius: 999px; padding: 5px 6px 5px 10px; margin-top: 8px; font-size: 14px; font-weight: 800; letter-spacing: 2px; color: #7c2d12; }
   .msg-otp button { padding: 4px 10px; font-size: 12px; }
-  .msg-body { font-size: 14px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; margin-top: 10px; border-top: 1px solid #ffedd5; padding-top: 10px; }
-  .empty { text-align: center; color: #a1a1aa; padding: 26px 10px 18px; font-size: 14px; line-height: 1.7; }
-  .empty .big { font-size: 38px; margin-bottom: 8px; }
-  .auto { text-align: center; font-size: 12.5px; color: #16a34a; padding: 10px 0 2px; }
-  .vault-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 0; border-bottom: 1px solid #ffedd5; }
-  .vault-item:last-child { border-bottom: none; }
-  .vault-item .a { font-size: 13.5px; font-weight: 600; word-break: break-all; }
-  .vault-item .b { font-size: 11px; color: #a1a1aa; margin-top: 2px; }
-  .vault-item.active .a { color: #ea580c; }
-  .tabs3 { display: flex; background: #ffedd5; border-radius: 999px; padding: 4px; margin-bottom: 12px; }
-  .tabs3 button { flex: 1; background: transparent; color: #9a3412; padding: 9px 4px; border-radius: 999px; font-size: 13.5px; }
-  .tabs3 button.on { background: #fff; color: #7c2d12; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
-  .vault-empty { font-size: 13px; color: #a1a1aa; text-align: center; padding: 12px 0; }
-  .ip-line { display: flex; align-items: center; gap: 8px; background: #fff7ed; border: 1px dashed #fdba74; border-radius: 12px; padding: 10px 12px; font-size: 13px; margin-top: 10px; color: #7c2d12; }
-  .ip-line b { font-size: 14px; }
-  .country-sel { width: 100%; font-family: inherit; font-size: 16px; padding: 12px; border: 1px solid #fdba74; border-radius: 12px; margin-bottom: 10px; background: #fff; color: #1c1c1e; }
-  .gen-preview { background: #fff7ed; border-radius: 12px; padding: 12px; font-size: 15px; font-weight: 700; word-break: break-all; margin: 10px 0 4px; text-align: center; }
-  .gen-preview small { display: block; font-size: 12px; font-weight: 400; color: #9a3412; margin-top: 4px; }
-  .signup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .signup-grid button { padding: 12px 8px; font-size: 14px; }
-  .toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); background: #1c1c1e; color: #fff; font-size: 14px; padding: 10px 18px; border-radius: 999px; z-index: 99; display: none; white-space: nowrap; max-width: 92vw; overflow: hidden; text-overflow: ellipsis; }
-  .err { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; border-radius: 12px; padding: 12px; font-size: 14px; margin-bottom: 14px; display: none; }
-  .err button { margin-top: 8px; }
+  .msg-body { font-size: 14px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; }
+  .empty { text-align: center; color: var(--sub); padding: 40px 20px; }
+  .empty .big { font-size: 52px; margin-bottom: 12px; opacity: .6; }
+  .empty h3 { font-size: 19px; color: var(--text); margin-bottom: 8px; }
+  .empty p { font-size: 14px; line-height: 1.6; }
+  .count { background: var(--blue); color: #fff; font-size: 12px; font-weight: 800; min-width: 22px; height: 22px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; padding: 0 6px; margin-left: 6px; vertical-align: 2px; }
+  /* history */
+  .hist-tabs { display: flex; background: var(--field); border-radius: 12px; padding: 4px; margin-bottom: 12px; }
+  .hist-tabs button { flex: 1; font-family: inherit; background: transparent; border: none; color: var(--sub); padding: 10px 4px; border-radius: 9px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .hist-tabs button.on { background: var(--card); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+  .hist-item { display: flex; align-items: center; gap: 12px; padding: 14px 4px; border-bottom: 1px solid var(--border); }
+  .hist-item:last-child { border-bottom: none; }
+  .hist-ico { width: 44px; height: 44px; border-radius: 12px; background: #dbeafe; color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 20px; flex: none; }
+  body.dark .hist-ico { background: #1e3a5f; }
+  .hist-main { flex: 1; min-width: 0; }
+  .hist-main .a { font-size: 15px; font-weight: 700; color: var(--blue); word-break: break-all; }
+  .hist-main .b { font-size: 12.5px; color: var(--sub); margin-top: 3px; }
+  .hist-item .acts { display: flex; gap: 6px; flex: none; align-items: center; }
+  .mini-btn { font-family: inherit; font-size: 13px; font-weight: 700; padding: 7px 11px; border-radius: 999px; border: 1px solid var(--border); background: var(--card); color: var(--text); cursor: pointer; }
+  .mini-btn.blue { background: #dbeafe; color: var(--blue); border-color: #bfdbfe; }
+  /* settings */
+  .sec-label { font-size: 12px; font-weight: 700; color: var(--sub); letter-spacing: 1px; margin: 18px 4px 8px; text-transform: uppercase; }
+  .set-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 6px 16px; margin-bottom: 4px; }
+  .set-row { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+  .set-row:last-child { border-bottom: none; }
+  .set-ico { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex: none; color: #fff; }
+  .set-main { flex: 1; min-width: 0; }
+  .set-main .t { font-size: 15.5px; font-weight: 700; }
+  .set-main .s { font-size: 13px; color: var(--sub); margin-top: 2px; line-height: 1.4; }
+  .set-val { font-size: 14px; color: var(--sub); flex: none; }
+  .chev { color: var(--sub); font-size: 18px; flex: none; }
+  .switch { width: 52px; height: 32px; border-radius: 999px; background: #d4d4d8; position: relative; flex: none; cursor: pointer; border: none; padding: 0; }
+  .switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; border-radius: 50%; background: #fff; transition: left .18s; box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+  .switch.on { background: #22c55e; }
+  .switch.on::after { left: 23px; }
+  /* bottom nav */
+  .bottom-nav { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); width: min(480px, calc(100% - 28px)); background: var(--nav-bg); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 999px; box-shadow: 0 6px 24px rgba(0,0,0,.14); display: flex; padding: 8px; z-index: 40; }
+  .nav-item { flex: 1; background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 0 6px; border-radius: 999px; color: var(--sub); font-family: inherit; }
+  .nav-item .ic { font-size: 23px; line-height: 1; }
+  .nav-item .lb { font-size: 11.5px; font-weight: 700; }
+  .nav-item.on { color: var(--blue); background: rgba(37,99,235,.1); }
+  /* sheets */
   .sheet-bg { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; z-index: 50; }
   .sheet-bg.open { display: block; }
-  .sheet { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-radius: 20px 20px 0 0; padding: 18px 16px 26px; z-index: 51; max-width: 560px; margin: 0 auto; display: none; }
+  .sheet { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); color: var(--text); border-radius: 20px 20px 0 0; padding: 18px 16px 26px; z-index: 51; max-width: 560px; margin: 0 auto; display: none; }
   .sheet.open { display: block; }
-  .sheet h3 { font-size: 18px; margin-bottom: 12px; color: #7c2d12; }
-  .sheet label { font-size: 13px; color: #9a3412; display: block; margin-bottom: 6px; font-weight: 700; }
-  .sheet input { width: 100%; font-family: inherit; font-size: 16px; padding: 12px; border: 1px solid #fdba74; border-radius: 12px; margin-bottom: 8px; background: #fff; color: #1c1c1e; }
-  .preview { background: #fff7ed; border-radius: 12px; padding: 12px; font-size: 15px; font-weight: 700; word-break: break-all; margin-bottom: 4px; }
-  .preview small { display: block; font-size: 12px; font-weight: 400; color: #9a3412; margin-top: 4px; }
+  .sheet h3 { font-size: 18px; margin-bottom: 12px; }
+  .sheet label { font-size: 13px; color: var(--sub); display: block; margin-bottom: 6px; font-weight: 700; }
+  .sheet input { width: 100%; font-family: inherit; font-size: 16px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; background: var(--card); color: var(--text); }
+  .preview { background: var(--field); border-radius: 12px; padding: 12px; font-size: 15px; font-weight: 700; word-break: break-all; margin-bottom: 4px; }
+  .preview small { display: block; font-size: 12px; font-weight: 400; color: var(--sub); margin-top: 4px; }
+  .qr-box { text-align: center; padding: 10px 0; }
+  .qr-box img { width: 220px; height: 220px; border-radius: 12px; background: #fff; padding: 8px; }
+  .qr-addr { font-size: 15px; font-weight: 700; word-break: break-all; margin: 10px 0; }
+  .signup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .signup-grid button { padding: 13px 8px; font-size: 14px; }
+  .toast { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); background: #1c1c1e; color: #fff; font-size: 14px; padding: 10px 18px; border-radius: 999px; z-index: 99; display: none; white-space: nowrap; max-width: 92vw; overflow: hidden; text-overflow: ellipsis; }
+  .err { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; border-radius: 12px; padding: 12px; font-size: 14px; margin-bottom: 14px; display: none; }
+  .err button { margin-top: 8px; }
+  .status { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--sub); background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 6px 12px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.18); }
+  .dot.off { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.15); }
+  .vault-empty { font-size: 13px; color: var(--sub); text-align: center; padding: 12px 0; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>📧 TempMail</h1>
+    <div class="logo">TempMail</div>
     <div style="display:flex;gap:8px;align-items:center">
-      <button class="btn-ghost btn-small" id="editBtn" onclick="toggleEdit()">✏️ Edit</button>
-      <span class="status"><span class="dot" id="statusDot"></span><span id="statusText">រួចរាល់</span></span>
+      <button class="icon-btn" onclick="openSignupSheet()" title="Premium">👑</button>
     </div>
   </header>
 
   <div class="err" id="errBox"><span id="errText"></span><br><button class="btn-ghost btn-small" onclick="hideErr()">បិទ</button></div>
 
-  <!-- 2. active address: Generate + Delete side by side, Gmail + Copy -->
-  <div class="card">
-    <div class="label">អាសយដ្ឋានបណ្តោះអាសន្នរបស់អ្នក</div>
-    <div class="addr" id="activeAddr">កំពុងបង្កើត…</div>
-    <button class="btn-ghost" style="width:100%" onclick="copyAddr()">📋 Copy Gmail</button>
-    <div class="note">ប្រើអាសយដ្ឋាននេះដើម្បីចុះឈ្មោះ — សំបុត្រនឹងមកដល់ក្នុងប្រអប់ខាងក្រោមដោយស្វ័យប្រវត្តិ។</div>
+  <!-- ============ HOME PAGE ============ -->
+  <div class="page active" id="page-home">
+    <!-- blue address card -->
+    <div class="addr-card">
+      <div class="addr-top">
+        <span class="t">✉️ <span data-i18n="temp_addr">Temporary address</span></span>
+        <span class="free-badge">Free</span>
+      </div>
+      <div class="addr-big" id="activeAddr">កំពុងបង្កើត…</div>
+      <div class="addr-active"><span class="green-dot"></span><span id="activeState">Active · Just now</span></div>
+      <div class="addr-actions">
+        <button class="addr-act" onclick="copyAddr()"><span class="circle">📋</span><span data-i18n="copy">Copy</span></button>
+        <button class="addr-act" onclick="openQrSheet()"><span class="circle">🔳</span><span data-i18n="qr">QR Code</span></button>
+        <button class="addr-act" onclick="shareAddr()"><span class="circle">↗️</span><span data-i18n="share">Share</span></button>
+      </div>
+    </div>
+
+    <!-- pills -->
+    <div class="pills">
+      <button class="pill pill-blue" onclick="aiGenerate()">✨ <span data-i18n="new_addr">AI Generate</span></button>
+      <button class="pill pill-orange" onclick="openSheet()" data-i18n="custom_email">Custom Email</button>
+    </div>
+
+    <!-- AI country + IP -->
+    <div class="card">
+      <div class="label">🌍 <span data-i18n="ai_country">ជ្រើសរើសប្រទេស — AI បង្កើតឈ្មោះតាមប្រទេសនោះ</span></div>
+      <select class="country-sel" id="countrySel" onchange="onCountryChange()"></select>
+      <div class="ip-line" id="ipLine" style="display:none">🌐 IP ប្រទេស៖ <b id="ipText"></b><span style="margin-left:auto" id="ipCountry"></span></div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn-ghost" onclick="openSheet()">✏️ <span data-i18n="custom_name">ដាក់ឈ្មោះខ្លួនឯង</span></button>
+        <button class="btn-danger" id="delBtn" onclick="deleteAddr()">🗑 Delete</button>
+      </div>
+    </div>
+
+    <!-- OTP -->
+    <div class="card otp-card" id="otpCard" style="display:none">
+      <div class="label">🔑 <span data-i18n="otp_found">រកឃើញលេខកូដ OTP</span></div>
+      <div class="otp-code" id="otpCode"></div>
+      <div class="otp-from" id="otpFrom"></div>
+      <button class="btn-primary" style="width:100%" onclick="copyOtp()" data-i18n="copy_otp">ចម្លង OTP</button>
+    </div>
+
+    <!-- premium gold card -->
+    <div class="gold-card">
+      <div style="font-size:26px">👑</div>
+      <h3><span data-i18n="premium_title">Get your own .com email</span> <span class="com-badge">.com</span></h3>
+      <div class="gold-check"><span class="ck">✓</span><span data-i18n="prem1">Exclusive .com domains</span></div>
+      <div class="gold-check"><span class="ck">✓</span><span data-i18n="prem2">Create your custom email</span></div>
+      <div class="gold-check"><span class="ck">✓</span><span data-i18n="prem3">No ads at all</span></div>
+      <div class="gold-check"><span class="ck">✓</span><span data-i18n="prem4">Free forever</span></div>
+      <button class="gold-btn" onclick="openSignupSheet()">🚀 <span data-i18n="signup_now">Sign Up →</span></button>
+    </div>
   </div>
 
-  <!-- 3. OTP -->
-  <div class="card otp-card" id="otpCard" style="display:none">
-    <div class="label">🔑 រកឃើញលេខកូដ OTP</div>
-    <div class="otp-code" id="otpCode"></div>
-    <div class="otp-from" id="otpFrom"></div>
-    <button class="btn-primary" style="width:100%" onclick="copyOtp()">ចម្លង OTP</button>
-  </div>
-
-  <!-- 4. inbox -->
-  <div class="card">
-    <div class="inbox-head">
-      <h2>✉️ ប្រអប់សំបុត្រ <span class="count" id="msgCount" style="display:none">0</span></h2>
-      <button class="btn-ghost btn-small" onclick="loadInbox(true)">↻ ផ្ទុកឡើងវិញ</button>
+  <!-- ============ INBOX PAGE ============ -->
+  <div class="page" id="page-inbox">
+    <div class="page-title"><span data-i18n="inbox_title">All messages</span> <span class="count" id="msgCount" style="display:none">0</span></div>
+    <div class="filter-pills">
+      <button id="fltAll" class="on" onclick="setInboxFilter('all')">All</button>
+      <button id="fltUnread" onclick="setInboxFilter('unread')">Unread</button>
+      <button id="fltOtp" onclick="setInboxFilter('otp')">OTP</button>
+      <button class="btn-ghost btn-small" style="margin-left:auto" onclick="loadInbox(true)">↻ <span data-i18n="refresh">ផ្ទុកឡើងវិញ</span></button>
     </div>
     <div id="inboxList"></div>
-    <div class="auto">● ឆែកសំបុត្ររាល់ 10 វិនាទីដោយស្វ័យប្រវត្តិ</div>
+    <div class="note" style="text-align:center">● <span data-i18n="auto_check">ឆែកសំបុត្ររាល់ 10 វិនាទីដោយស្វ័យប្រវត្តិ</span></div>
   </div>
 
-<div id="editPanel" style="display:none">
-  <!-- 1. AI Generate + country -->
-  <div class="card">
-    <div class="label">✨ AI Generate — ជ្រើសរើសប្រទេស ហើយបង្កើតឈ្មោះ</div>
-    <select class="country-sel" id="countrySel" onchange="onCountryChange()"></select>
-    <div class="row">
-      <button class="btn-ai" style="flex:2;width:auto" onclick="aiGenerate()">✨ AI Generate</button>
-      <button class="btn-danger" id="delBtn" style="flex:1" onclick="deleteAddr()">🗑 Delete</button>
+  <!-- ============ HISTORY PAGE ============ -->
+  <div class="page" id="page-history">
+    <div class="page-title" data-i18n="history_title">All addresses</div>
+    <div class="hist-tabs">
+      <button id="tabAll" class="on" onclick="setListTab('history')">All</button>
+      <button id="tabSaved" onclick="setListTab('saved')">💾 <span data-i18n="saved">Saved</span></button>
+      <button id="tabDeleted" onclick="setListTab('deleted')">🗑 <span data-i18n="deleted">Deleted</span></button>
     </div>
-    <div class="ip-line" id="ipLine" style="display:none">🌐 IP ប្រទេស៖ <b id="ipText"></b><span style="margin-left:auto" id="ipCountry"></span></div>
-    <div style="text-align:center;margin-top:10px"><button class="btn-ghost btn-small" onclick="openSheet()">✏️ ដាក់ឈ្មោះខ្លួនឯង</button></div>
+    <div class="card" style="padding:6px 16px"><div id="listBox"></div></div>
   </div>
 
-  <!-- 5. Saved / History / Deleted tabs -->
-  <div class="card">
-    <div class="tabs3">
-      <button id="tabSaved" class="on" onclick="setListTab('saved')">💾 រក្សាទុក</button>
-      <button id="tabHistory" onclick="setListTab('history')">🕐 History</button>
-      <button id="tabDeleted" onclick="setListTab('deleted')">🗑 បានលុប</button>
+  <!-- ============ SETTINGS PAGE ============ -->
+  <div class="page" id="page-settings">
+    <div class="card">
+      <div style="display:flex;gap:12px;align-items:center">
+        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;flex:none">📧</div>
+        <div style="flex:1">
+          <div style="font-size:18px;font-weight:800">TempMail</div>
+          <div style="font-size:13px;color:var(--sub)" data-i18n="free_forever">Free forever · No ads</div>
+        </div>
+      </div>
+      <div class="note" id="settingsInfo"></div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn-ghost" onclick="exportVault()">⬇️ Export</button>
+        <button class="btn-ghost" onclick="shareApp()">↗️ <span data-i18n="share_app">Share App</span></button>
+      </div>
     </div>
-    <div id="listBox"></div>
-  </div>
 
-  <!-- 6. created Gmail list with options -->
-  <div class="card">
-    <div class="inbox-head">
-      <h2>📬 Gmail ដែលបានបង្កើត</h2>
-      <span style="font-size:12px;color:#a1a1aa" id="createdCount"></span>
+    <div class="sec-label">Support</div>
+    <div class="set-card">
+      <div class="set-row" onclick="contactUs()">
+        <div class="set-ico" style="background:#38bdf8">💬</div>
+        <div class="set-main"><div class="t">Contact Us</div><div class="s">Questions or problems? Our team is here to help.</div></div>
+        <button class="btn-primary btn-small" onclick="event.stopPropagation();contactUs()">Contact</button>
+      </div>
     </div>
-    <div id="createdList"></div>
-  </div>
 
-  <!-- 7. Sign Up — make it a real account -->
-  <div class="card">
-    <div class="label">🚀 Sign Up — ចុះឈ្មោះ Gmail នេះឲ្យក្លាយជាគណនីពិត</div>
-    <div class="note" style="margin:0 0 10px">ចុចសេវាណាមួយ — អាសយដ្ឋាននឹងចម្លងរួចហើយ បើកទំព័រចុះឈ្មោះ។</div>
-    <div class="signup-grid">
-      <button class="btn-ghost" onclick="signup('https://www.facebook.com/r.php')">📘 Facebook</button>
-      <button class="btn-ghost" onclick="signup('https://muse.ai')">🤖 Muse AI</button>
-      <button class="btn-ghost" onclick="signup('https://accounts.google.com/signup')">🔍 Google</button>
-      <button class="btn-ghost" onclick="signup('https://www.tiktok.com/signup')">🎵 TikTok</button>
+    <div class="sec-label">General</div>
+    <div class="set-card">
+      <div class="set-row" onclick="showQrSite()">
+        <div class="set-ico" style="background:#0ea5e9">🔳</div>
+        <div class="set-main"><div class="t">Sign In to Website</div><div class="s">Scan the QR code on your computer</div></div>
+        <span class="chev">›</span>
+      </div>
+      <div class="set-row" onclick="toggleTheme()">
+        <div class="set-ico" style="background:#7c3aed">🌙</div>
+        <div class="set-main"><div class="t">Theme</div><div class="s" id="themeSub">Light, dark, or match your phone</div></div>
+        <button class="switch" id="themeSwitch" onclick="event.stopPropagation();toggleTheme()" aria-label="Theme"></button>
+      </div>
+      <div class="set-row" onclick="toggleLang()">
+        <div class="set-ico" style="background:#2563eb">🌐</div>
+        <div class="set-main"><div class="t">Language</div><div class="s" id="langSub">Choose the language</div></div>
+        <span class="set-val" id="langVal">ខ្មែរ</span>
+      </div>
     </div>
+
+    <div class="sec-label">More</div>
+    <div class="set-card">
+      <div class="set-row" onclick="shareApp()">
+        <div class="set-ico" style="background:#22c55e">↗️</div>
+        <div class="set-main"><div class="t">Share App</div><div class="s">Share TempMail with your friends</div></div>
+        <span class="chev">›</span>
+      </div>
+      <div class="set-row" onclick="showAbout()">
+        <div class="set-ico" style="background:#f59e0b">ℹ️</div>
+        <div class="set-main"><div class="t">About</div><div class="s" id="aboutSub">TempMail · v2.0</div></div>
+        <span class="chev">›</span>
+      </div>
+    </div>
+    <div style="text-align:center;padding:14px 0 4px"><span class="status"><span class="dot" id="statusDot"></span><span id="statusText">រួចរាល់</span></span></div>
   </div>
 </div>
-</div>
 
-<!-- custom name sheet -->
-<div class="sheet-bg" id="sheetBg" onclick="closeSheet()"></div>
-<div class="sheet" id="sheet">
-  <h3>ដាក់ឈ្មោះខ្លួនឯង</h3>
-  <label>ឈ្មោះអាសយដ្ឋាន (អក្សរអង់គ្លេស និងលេខតែប៉ុណ្ណោះ — សញ្ញា «.» ប្រើមិនបានទេ)</label>
+<!-- bottom nav -->
+<nav class="bottom-nav">
+  <button class="nav-item on" id="nav-home" onclick="goPage('home')"><span class="ic">🏠</span><span class="lb" data-i18n="nav_home">Home</span></button>
+  <button class="nav-item" id="nav-inbox" onclick="goPage('inbox')"><span class="ic">✉️</span><span class="lb" data-i18n="nav_inbox">Inbox</span></button>
+  <button class="nav-item" id="nav-history" onclick="goPage('history')"><span class="ic">🕐</span><span class="lb" data-i18n="nav_history">History</span></button>
+  <button class="nav-item" id="nav-settings" onclick="goPage('settings')"><span class="ic">⚙️</span><span class="lb" data-i18n="nav_settings">Settings</span></button>
+</nav>
+
+<!-- sheets -->
+<div class="sheet-bg" id="sheetBg" onclick="closeAllSheets()"></div>
+
+<div class="sheet" id="customSheet">
+  <h3 data-i18n="custom_email">Custom Email</h3>
+  <label data-i18n="custom_label">ឈ្មោះអាសយដ្ឋាន (អក្សរអង់គ្លេស និងលេខតែប៉ុណ្ណោះ — សញ្ញា «.» ប្រើមិនបានទេ)</label>
   <input id="customName" placeholder="ឧ. sokha99" maxlength="30" oninput="updatePreview()">
   <div class="preview" id="previewAddr">…</div>
   <div class="row" style="margin-top:12px">
-    <button class="btn-ghost" onclick="closeSheet()">បោះបង់</button>
+    <button class="btn-ghost" onclick="closeAllSheets()">បោះបង់</button>
     <button class="btn-primary" onclick="createCustomAddress()">បង្កើត</button>
+  </div>
+</div>
+
+<div class="sheet" id="qrSheet">
+  <h3 data-i18n="qr_title">QR Code</h3>
+  <div class="qr-box"><img id="qrImg" alt="QR code"></div>
+  <div class="qr-addr" id="qrAddr"></div>
+  <div class="row">
+    <button class="btn-ghost" onclick="closeAllSheets()">បិទ</button>
+    <button class="btn-primary" onclick="copyAddr()">📋 Copy</button>
+  </div>
+</div>
+
+<div class="sheet" id="signupSheet">
+  <h3>🚀 Sign Up — <span data-i18n="signup_title">ចុះឈ្មោះ Gmail នេះឲ្យក្លាយជាគណនីពិត</span></h3>
+  <div class="note" style="margin:0 0 12px" data-i18n="signup_note">ចុចសេវាណាមួយ — អាសយដ្ឋាននឹងចម្លងរួចហើយ បើកទំព័រចុះឈ្មោះ។</div>
+  <div class="signup-grid">
+    <button class="btn-ghost" onclick="signup('https://www.facebook.com/r.php')">📘 Facebook</button>
+    <button class="btn-ghost" onclick="signup('https://muse.ai')">🤖 Muse AI</button>
+    <button class="btn-ghost" onclick="signup('https://accounts.google.com/signup')">🔍 Google</button>
+    <button class="btn-ghost" onclick="signup('https://www.tiktok.com/signup')">🎵 TikTok</button>
   </div>
 </div>
 
@@ -190,14 +366,18 @@ const LS_ACTIVE = 'tempmail_active';
 const LS_VAULT = 'tempmail_vault';
 const LS_HISTORY = 'tempmail_history';
 const LS_DELETED = 'tempmail_deleted';
+const LS_THEME = 'tempmail_theme';
+const LS_LANG = 'tempmail_lang';
 let active = null;
 let domains = ['fldubai.com'];
 let messages = [];
 let openedId = null;
 let currentOtp = '';
-let listTab = 'saved';
+let listTab = 'history';
+let inboxFilter = 'all';
 let aiName = '';
 let aiCountry = null;
+let lang = 'km';
 
 function $(id) { return document.getElementById(id); }
 function toast(t) { const el = $('toast'); el.textContent = t; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 2200); }
@@ -221,13 +401,6 @@ async function api(path, opts) {
 }
 function cleanName(raw) { return String(raw || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
 function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
-let editOpen = false;
-function toggleEdit() {
-  editOpen = !editOpen;
-  $('editPanel').style.display = editOpen ? 'block' : 'none';
-  $('editBtn').textContent = editOpen ? '✓ រួចរាល់' : '✏️ Edit';
-  if (editOpen) { renderListTab(); renderCreated(); }
-}
 </script>
 
 <script>
@@ -296,6 +469,52 @@ function initCountries() {
   aiCountry = COUNTRIES[0];
   onCountryChange();
 }
+
+// ---- navigation ----------------------------------------------------------
+function goPage(p) {
+  ['home', 'inbox', 'history', 'settings'].forEach(x => {
+    $('page-' + x).classList.toggle('active', x === p);
+    $('nav-' + x).classList.toggle('on', x === p);
+  });
+  if (p === 'inbox') loadInbox(false);
+  if (p === 'history') { renderListTab(); }
+  if (p === 'settings') renderSettingsInfo();
+  window.scrollTo({ top: 0 });
+}
+
+// ---- language ------------------------------------------------------------
+const STRINGS = {
+  km: { nav_home: 'ទំព័រដើម', nav_inbox: 'សំបុត្រ', nav_history: 'ប្រវត្តិ', nav_settings: 'ការកំណត់', temp_addr: 'Temporary address', copy: 'Copy', qr: 'QR Code', share: 'Share', new_addr: 'AI Generate', custom_email: 'Custom Email', ai_country: 'ជ្រើសរើសប្រទេស — AI បង្កើតឈ្មោះតាមប្រទេសនោះ', custom_name: 'ដាក់ឈ្មោះខ្លួនឯង', otp_found: 'រកឃើញលេខកូដ OTP', copy_otp: 'ចម្លង OTP', premium_title: 'Get your own .com email', prem1: 'Exclusive .com domains', prem2: 'Create your custom email', prem3: 'No ads at all', prem4: 'Free forever', signup_now: 'Sign Up →', signup_title: 'ចុះឈ្មោះ Gmail នេះឲ្យក្លាយជាគណនីពិត', signup_note: 'ចុចសេវាណាមួយ — អាសយដ្ឋាននឹងចម្លងរួចហើយ បើកទំព័រចុះឈ្មោះ។', inbox_title: 'All messages', refresh: 'ផ្ទុកឡើងវិញ', auto_check: 'ឆែកសំបុត្ររាល់ 10 វិនាទីដោយស្វ័យប្រវត្តិ', history_title: 'All addresses', saved: 'Saved', deleted: 'Deleted', free_forever: 'Free forever · No ads', share_app: 'Share App', custom_label: 'ឈ្មោះអាសយដ្ឋាន (អក្សរអង់គ្លេស និងលេខតែប៉ុណ្ណោះ — សញ្ញា «.» ប្រើមិនបានទេ)', qr_title: 'QR Code' },
+  en: { nav_home: 'Home', nav_inbox: 'Inbox', nav_history: 'History', nav_settings: 'Settings', temp_addr: 'Temporary address', copy: 'Copy', qr: 'QR Code', share: 'Share', new_addr: 'AI Generate', custom_email: 'Custom Email', ai_country: 'Choose a country — AI creates a name from that country', custom_name: 'Custom name', otp_found: 'OTP code found', copy_otp: 'Copy OTP', premium_title: 'Get your own .com email', prem1: 'Exclusive .com domains', prem2: 'Create your custom email', prem3: 'No ads at all', prem4: 'Free forever', signup_now: 'Sign Up →', signup_title: 'Sign up this Gmail as a real account', signup_note: 'Tap a service — the address is copied and the sign-up page opens.', inbox_title: 'All messages', refresh: 'Reload', auto_check: 'Auto-checks mail every 10 seconds', history_title: 'All addresses', saved: 'Saved', deleted: 'Deleted', free_forever: 'Free forever · No ads', share_app: 'Share App', custom_label: 'Address name (English letters and numbers only — «.» is not allowed)', qr_title: 'QR Code' },
+};
+function applyLang() {
+  const s = STRINGS[lang] || STRINGS.km;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (s[k]) el.textContent = s[k];
+  });
+  $('langVal').textContent = lang === 'km' ? 'ខ្មែរ' : 'English';
+  $('langSub').textContent = lang === 'km' ? 'Choose the language' : 'ជ្រើសរើសភាសា';
+}
+function toggleLang() {
+  lang = lang === 'km' ? 'en' : 'km';
+  localStorage.setItem(LS_LANG, lang);
+  applyLang();
+  toast(lang === 'km' ? 'ភាសាខ្មែរ ✓' : 'English ✓');
+}
+
+// ---- theme ---------------------------------------------------------------
+function applyTheme() {
+  const dark = localStorage.getItem(LS_THEME) === 'dark';
+  document.body.classList.toggle('dark', dark);
+  $('themeSwitch').classList.toggle('on', dark);
+  $('themeSub').textContent = dark ? 'Dark' : 'Light';
+}
+function toggleTheme() {
+  const dark = localStorage.getItem(LS_THEME) !== 'dark';
+  localStorage.setItem(LS_THEME, dark ? 'dark' : 'light');
+  applyTheme();
+}
 </script>
 
 <script>
@@ -329,6 +548,7 @@ function setActive(a) {
   active = a;
   saveActive(a);
   $('activeAddr').textContent = a.address;
+  $('activeState').textContent = 'Active · Just now';
   const item = { address: a.address, accountId: a.accountId, token: a.token, created: new Date().toISOString() };
   const v = loadLs(LS_VAULT);
   if (!v.some(x => x.address === a.address)) { v.unshift(item); saveLs(LS_VAULT, v); }
@@ -340,7 +560,6 @@ function setActive(a) {
   messages = []; openedId = null; currentOtp = '';
   $('otpCard').style.display = 'none';
   renderListTab();
-  renderCreated();
   loadInbox(true);
   setStatus(true, 'រួចរាល់');
 }
@@ -348,6 +567,14 @@ function setActive(a) {
 function copyAddr() {
   if (!active) return;
   navigator.clipboard.writeText(active.address).then(() => toast('ចម្លងអាសយដ្ឋានរួចហើយ ✓'));
+}
+function shareAddr() {
+  if (!active) return;
+  if (navigator.share) {
+    navigator.share({ title: 'TempMail', text: active.address }).catch(() => {});
+  } else {
+    copyAddr();
+  }
 }
 
 let delArmed = false;
@@ -374,20 +601,40 @@ async function deleteAddr() {
   saveActive(null);
   active = null;
   $('activeAddr').textContent = '—';
+  $('activeState').textContent = '';
   messages = [];
   renderInbox();
   $('otpCard').style.display = 'none';
   renderListTab();
-  renderCreated();
   toast('លុបអាសយដ្ឋានរួចហើយ');
   createAddressAuto();
 }
 
 async function createAddressAuto() { await createAddressWith(''); }
 
-// ---- custom name sheet ---------------------------------------------------
-function openSheet() { $('sheetBg').classList.add('open'); $('sheet').classList.add('open'); updatePreview(); }
-function closeSheet() { $('sheetBg').classList.remove('open'); $('sheet').classList.remove('open'); }
+// ---- sheets --------------------------------------------------------------
+function openSheetEl(id) { $('sheetBg').classList.add('open'); $(id).classList.add('open'); }
+function closeAllSheets() {
+  $('sheetBg').classList.remove('open');
+  ['customSheet', 'qrSheet', 'signupSheet'].forEach(id => $(id).classList.remove('open'));
+}
+function openSheet() { updatePreview(); openSheetEl('customSheet'); }
+function openQrSheet() {
+  if (!active) return;
+  $('qrAddr').textContent = active.address;
+  $('qrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(active.address);
+  $('qrImg').onerror = () => { $('qrImg').style.display = 'none'; };
+  $('qrImg').style.display = '';
+  openSheetEl('qrSheet');
+}
+function openSignupSheet() { openSheetEl('signupSheet'); }
+function showQrSite() {
+  $('qrAddr').textContent = location.origin;
+  $('qrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(location.origin);
+  $('qrImg').onerror = () => { $('qrImg').style.display = 'none'; };
+  $('qrImg').style.display = '';
+  openSheetEl('qrSheet');
+}
 function updatePreview() {
   const domain = domains[0] || 'fldubai.com';
   const raw = $('customName').value || '';
@@ -398,7 +645,7 @@ function updatePreview() {
 async function createCustomAddress() {
   const username = cleanName($('customName').value);
   if (!username) { toast('សូមដាក់ឈ្មោះជាមុន'); return; }
-  closeSheet();
+  closeAllSheets();
   await createAddressWith(username);
 }
 
@@ -453,7 +700,6 @@ async function loadInbox(manual) {
     hideErr();
   } catch (e) {
     if (e.status === 401 && active) {
-      // token ផុតកំណត់ — បង្កើតអាសយដ្ឋានថ្មីដោយស្វ័យប្រវត្តិ
       saveActive(null);
       active = null;
       toast('អាសយដ្ឋានចាស់ផុតកំណត់ — កំពុងបង្កើតថ្មី…');
@@ -468,18 +714,39 @@ async function loadInbox(manual) {
 function fmtDate(s) {
   try { return new Date(s).toLocaleString('km-KH', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' }); } catch (e) { return s || ''; }
 }
+function fmtDateShort(s) {
+  try {
+    const d = new Date(s);
+    const today = new Date();
+    const sameDay = d.toDateString() === today.toDateString();
+    return sameDay ? 'Created today' : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  } catch (e) { return s || ''; }
+}
+
+function setInboxFilter(f) {
+  inboxFilter = f;
+  $('fltAll').classList.toggle('on', f === 'all');
+  $('fltUnread').classList.toggle('on', f === 'unread');
+  $('fltOtp').classList.toggle('on', f === 'otp');
+  renderInbox();
+}
 
 function renderInbox() {
   const box = $('inboxList');
   const c = $('msgCount');
-  if (!messages.length) {
+  let list = messages;
+  if (inboxFilter === 'unread') list = messages.filter(m => !m.seen);
+  if (inboxFilter === 'otp') list = messages.filter(m => findOtp((m.subject || '') + ' ' + (m.intro || '')));
+  if (!list.length) {
     c.style.display = 'none';
-    box.innerHTML = '<div class="empty"><div class="big">📭</div>មិនទាន់មានសំបុត្រទេ<br>ប្រើអាសយដ្ឋានខាងលើដើម្បីចុះឈ្មោះ — សំបុត្រនឹងបង្ហាញនៅទីនេះដោយស្វ័យប្រវត្តិ។</div>';
+    const emptyTitle = inboxFilter === 'all' ? 'No Emails Yet' : (inboxFilter === 'unread' ? 'No Unread Emails' : 'No OTP Emails');
+    const emptySub = inboxFilter === 'all' ? 'Emails will appear here the moment they arrive. Pull down to refresh.' : 'Try another filter.';
+    box.innerHTML = '<div class="empty"><div class="big">✉️</div><h3>' + emptyTitle + '</h3><p>' + emptySub + '</p></div>';
     return;
   }
   c.style.display = '';
-  c.textContent = messages.length;
-  box.innerHTML = messages.map(m => {
+  c.textContent = list.length;
+  box.innerHTML = list.map(m => {
     const from = (m.from && (m.from.address || m.from.name)) || 'មិនស្គាល់';
     const letter = (from[0] || '?').toUpperCase();
     const otp = findOtp((m.subject || '') + ' ' + (m.intro || ''));
@@ -528,12 +795,14 @@ function copyOtp() {
   if (!currentOtp) return;
   navigator.clipboard.writeText(currentOtp).then(() => toast('ចម្លង OTP រួចហើយ ✓'));
 }
+</script>
 
-// ---- Saved / History / Deleted tabs --------------------------------------
+<script>
+// ---- History tabs: All / Saved / Deleted ---------------------------------
 function setListTab(t) {
   listTab = t;
+  $('tabAll').classList.toggle('on', t === 'history');
   $('tabSaved').classList.toggle('on', t === 'saved');
-  $('tabHistory').classList.toggle('on', t === 'history');
   $('tabDeleted').classList.toggle('on', t === 'deleted');
   renderListTab();
 }
@@ -546,14 +815,16 @@ function renderListTab() {
   if (!items.length) { box.innerHTML = '<div class="vault-empty">' + emptyMsg + '</div>'; return; }
   box.innerHTML = items.map(x => {
     const isActive = active && x.address === active.address;
-    return '<div class="vault-item' + (isActive ? ' active' : '') + '">'
-      + '<div><div class="a">' + esc(x.address) + '</div><div class="b">' + (isActive ? '● កំពុងប្រើ' : esc(fmtDate(x.created))) + '</div></div>'
-      + '<div style="display:flex;gap:6px;flex:none">'
+    return '<div class="hist-item">'
+      + '<div class="hist-ico">✉️</div>'
+      + '<div class="hist-main"><div class="a">' + esc(x.address) + '</div>'
+      + '<div class="b">Free · ' + esc(fmtDateShort(x.created)) + (isActive ? ' · ● កំពុងប្រើ' : '') + '</div></div>'
+      + '<div class="acts">'
       + (isDeleted
-          ? '<button class="btn-ghost btn-small" onclick="restoreDeleted(\'' + esc(x.address) + '\')">↩ ស្ដារ</button>'
-          : (isActive ? '' : '<button class="btn-ghost btn-small" onclick="restoreAddr(\'' + esc(x.address) + '\')">ប្រើវិញ</button>'))
-      + '<button class="btn-ghost btn-small" onclick="copyText(\'' + esc(x.address) + '\')">📋</button>'
-      + '<button class="btn-ghost btn-small" onclick="removeFromList(\'' + esc(x.address) + '\', ' + isDeleted + ')">✕</button>'
+          ? '<button class="mini-btn" onclick="restoreDeleted(\'' + esc(x.address) + '\')">↩ ស្ដារ</button>'
+          : (isActive ? '' : '<button class="mini-btn blue" onclick="restoreAddr(\'' + esc(x.address) + '\')">✓</button>'))
+      + '<button class="mini-btn" onclick="copyText(\'' + esc(x.address) + '\')">📋</button>'
+      + '<button class="mini-btn" onclick="removeFromList(\'' + esc(x.address) + '\', ' + isDeleted + ')">✕</button>'
       + '</div></div>';
   }).join('');
 }
@@ -580,30 +851,42 @@ function removeFromList(address, isDeleted) {
     saveLs(LS_HISTORY, loadLs(LS_HISTORY).filter(x => x.address !== address));
   }
   renderListTab();
-  renderCreated();
 }
 
-// ---- created Gmail list --------------------------------------------------
-function renderCreated() {
-  const items = loadLs(LS_HISTORY);
-  const box = $('createdList');
-  $('createdCount').textContent = items.length ? items.length + ' អាសយដ្ឋាន' : '';
-  if (!items.length) { box.innerHTML = '<div class="vault-empty">មិនទាន់បានបង្កើត Gmail ទេ</div>'; return; }
-  box.innerHTML = items.map(x => {
-    const isActive = active && x.address === active.address;
-    return '<div class="vault-item' + (isActive ? ' active' : '') + '">'
-      + '<div><div class="a">' + esc(x.address) + '</div><div class="b">' + (isActive ? '● កំពុងប្រើ' : esc(fmtDate(x.created))) + '</div></div>'
-      + '<div style="display:flex;gap:6px;flex:none">'
-      + (isActive ? '' : '<button class="btn-ghost btn-small" onclick="restoreAddr(\'' + esc(x.address) + '\')">ប្រើ</button>')
-      + '<button class="btn-ghost btn-small" onclick="copyText(\'' + esc(x.address) + '\')">📋 Copy</button>'
-      + '<button class="btn-ghost btn-small" onclick="signupWith(\'' + esc(x.address) + '\')">🚀 Sign Up</button>'
-      + '</div></div>';
-  }).join('');
+// ---- Settings ------------------------------------------------------------
+function renderSettingsInfo() {
+  const saved = loadLs(LS_VAULT).length;
+  const hist = loadLs(LS_HISTORY).length;
+  $('settingsInfo').textContent = 'Domain: @' + (domains[0] || 'fldubai.com') + ' · រក្សាទុក ' + saved + ' · ប្រវត្តិ ' + hist;
+  $('aboutSub').textContent = 'TempMail · v2.0 · @' + (domains[0] || 'fldubai.com');
+}
+function contactUs() { window.open('https://t.me/yemsokhoeun_9999', '_blank'); }
+function shareApp() {
+  const url = location.origin;
+  if (navigator.share) {
+    navigator.share({ title: 'TempMail', text: 'TempMail — Temporary Email', url }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(url).then(() => toast('ចម្លង Link រួចហើយ ✓'));
+  }
+}
+function exportVault() {
+  const data = { exported: new Date().toISOString(), vault: loadLs(LS_VAULT), history: loadLs(LS_HISTORY) };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'tempmail-backup.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  toast('Export រួចហើយ ✓');
+}
+function showAbout() {
+  toast('TempMail v2.0 · @' + (domains[0] || 'fldubai.com') + ' · Free forever');
 }
 
 // ---- Sign Up -------------------------------------------------------------
 function signup(url) {
   if (active) navigator.clipboard.writeText(active.address).catch(() => {});
+  closeAllSheets();
   toast('ចម្លង Gmail រួចហើយ — បើកទំព័រចុះឈ្មោះ…');
   setTimeout(() => window.open(url, '_blank'), 400);
 }
@@ -614,14 +897,18 @@ function signupWith(address) {
 
 // ---- boot ----------------------------------------------------------------
 (async function boot() {
+  lang = localStorage.getItem(LS_LANG) || 'km';
+  applyLang();
+  applyTheme();
   initCountries();
   await loadDomains();
   renderListTab();
-  renderCreated();
+  renderSettingsInfo();
   const saved = loadActive();
   if (saved && saved.address && saved.token) {
     active = saved;
     $('activeAddr').textContent = saved.address;
+    $('activeState').textContent = 'Active';
     loadInbox(false);
     setStatus(true, 'រួចរាល់');
   } else {
