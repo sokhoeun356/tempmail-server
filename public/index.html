@@ -90,22 +90,13 @@
 <div class="wrap">
   <header>
     <h1>📧 TempMail</h1>
-    <span class="status"><span class="dot" id="statusDot"></span><span id="statusText">រួចរាល់</span></span>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn-ghost btn-small" id="editBtn" onclick="toggleEdit()">✏️ Edit</button>
+      <span class="status"><span class="dot" id="statusDot"></span><span id="statusText">រួចរាល់</span></span>
+    </div>
   </header>
 
   <div class="err" id="errBox"><span id="errText"></span><br><button class="btn-ghost btn-small" onclick="hideErr()">បិទ</button></div>
-
-  <!-- 1. AI Generate + country -->
-  <div class="card">
-    <div class="label">✨ AI Generate — ជ្រើសរើសប្រទេស ហើយបង្កើតឈ្មោះ</div>
-    <select class="country-sel" id="countrySel" onchange="onCountryChange()"></select>
-    <div class="row">
-      <button class="btn-ai" style="flex:2;width:auto" onclick="aiGenerate()">✨ AI Generate</button>
-      <button class="btn-danger" id="delBtn" style="flex:1" onclick="deleteAddr()">🗑 Delete</button>
-    </div>
-    <div class="ip-line" id="ipLine" style="display:none">🌐 IP ប្រទេស៖ <b id="ipText"></b><span style="margin-left:auto" id="ipCountry"></span></div>
-    <div style="text-align:center;margin-top:10px"><button class="btn-ghost btn-small" onclick="openSheet()">✏️ ដាក់ឈ្មោះខ្លួនឯង</button></div>
-  </div>
 
   <!-- 2. active address: Generate + Delete side by side, Gmail + Copy -->
   <div class="card">
@@ -131,6 +122,19 @@
     </div>
     <div id="inboxList"></div>
     <div class="auto">● ឆែកសំបុត្ររាល់ 10 វិនាទីដោយស្វ័យប្រវត្តិ</div>
+  </div>
+
+<div id="editPanel" style="display:none">
+  <!-- 1. AI Generate + country -->
+  <div class="card">
+    <div class="label">✨ AI Generate — ជ្រើសរើសប្រទេស ហើយបង្កើតឈ្មោះ</div>
+    <select class="country-sel" id="countrySel" onchange="onCountryChange()"></select>
+    <div class="row">
+      <button class="btn-ai" style="flex:2;width:auto" onclick="aiGenerate()">✨ AI Generate</button>
+      <button class="btn-danger" id="delBtn" style="flex:1" onclick="deleteAddr()">🗑 Delete</button>
+    </div>
+    <div class="ip-line" id="ipLine" style="display:none">🌐 IP ប្រទេស៖ <b id="ipText"></b><span style="margin-left:auto" id="ipCountry"></span></div>
+    <div style="text-align:center;margin-top:10px"><button class="btn-ghost btn-small" onclick="openSheet()">✏️ ដាក់ឈ្មោះខ្លួនឯង</button></div>
   </div>
 
   <!-- 5. Saved / History / Deleted tabs -->
@@ -163,6 +167,7 @@
       <button class="btn-ghost" onclick="signup('https://www.tiktok.com/signup')">🎵 TikTok</button>
     </div>
   </div>
+</div>
 </div>
 
 <!-- custom name sheet -->
@@ -212,6 +217,13 @@ async function api(path, opts) {
 }
 function cleanName(raw) { return String(raw || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
 function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+let editOpen = false;
+function toggleEdit() {
+  editOpen = !editOpen;
+  $('editPanel').style.display = editOpen ? 'block' : 'none';
+  $('editBtn').textContent = editOpen ? '✓ រួចរាល់' : '✏️ Edit';
+  if (editOpen) { renderListTab(); renderCreated(); }
+}
 </script>
 
 <script>
