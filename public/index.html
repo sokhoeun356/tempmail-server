@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TempMail</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: "Noto Sans Khmer", "Kantumruy Pro", system-ui, -apple-system, sans-serif;
+    background: #f4f4f5; color: #1c1c1e; min-height: 100vh;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 16px 14px 40px; }
+  header { display: flex; align-items: center; justify-content: space-between; padding: 6px 2px 14px; }
+  header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
+  .status { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #555; background: #fff; border: 1px solid #e4e4e7; border-radius: 999px; padding: 6px 12px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.18); }
+  .dot.off { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.15); }
+  .card { background: #fff; border: 1px solid #e4e4e7; border-radius: 16px; padding: 16px; margin-bottom: 14px; }
+  .label { font-size: 12px; color: #71717a; margin-bottom: 6px; }
+  .addr { font-size: 17px; font-weight: 700; word-break: break-all; line-height: 1.4; margin-bottom: 14px; }
+  .row { display: flex; gap: 8px; }
+  .row > * { flex: 1; }
+  button { font-family: inherit; font-size: 15px; font-weight: 700; border: none; border-radius: 12px; padding: 12px 10px; cursor: pointer; }
+  button:active { transform: scale(.97); }
+  .btn-primary { background: #ff6a00; color: #fff; }
+  .btn-ghost { background: #f4f4f5; color: #1c1c1e; border: 1px solid #e4e4e7; }
+  .btn-danger { background: #fff; color: #dc2626; border: 1px solid #fecaca; }
+  .btn-danger.armed { background: #dc2626; color: #fff; border-color: #dc2626; }
+  .btn-small { padding: 8px 12px; font-size: 13px; border-radius: 999px; flex: none; }
+  .note { font-size: 12.5px; color: #71717a; line-height: 1.6; margin-top: 12px; }
+  .otp-card { background: #fff7ed; border: 1px solid #fed7aa; }
+  .otp-card .label { color: #c2410c; }
+  .otp-code { font-size: 30px; font-weight: 800; letter-spacing: 4px; text-align: center; margin: 4px 0 10px; }
+  .otp-from { font-size: 13px; color: #9a3412; text-align: center; margin-bottom: 12px; }
+  .inbox-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .inbox-head h2 { font-size: 17px; }
+  .count { background: #ff6a00; color: #fff; font-size: 12px; font-weight: 800; min-width: 22px; height: 22px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; padding: 0 6px; margin-left: 6px; vertical-align: 2px; }
+  .msg { border: 1px solid #e4e4e7; border-radius: 12px; padding: 12px; margin-bottom: 8px; cursor: pointer; background: #fff; }
+  .msg.unread { border-color: #ff6a00; background: #fffaf5; }
+  .msg .from { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+  .msg .subject { font-size: 14px; margin-bottom: 2px; }
+  .msg .intro { font-size: 13px; color: #71717a; line-height: 1.5; }
+  .msg .date { font-size: 11px; color: #a1a1aa; margin-top: 6px; }
+  .msg-body { font-size: 14px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; margin-top: 10px; border-top: 1px solid #f4f4f5; padding-top: 10px; }
+  .empty { text-align: center; color: #a1a1aa; padding: 26px 10px 18px; font-size: 14px; line-height: 1.7; }
+  .empty .big { font-size: 38px; margin-bottom: 8px; }
+  .auto { text-align: center; font-size: 12.5px; color: #22c55e; padding: 10px 0 2px; }
+  .vault-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 0; border-bottom: 1px solid #f4f4f5; }
+  .vault-item:last-child { border-bottom: none; }
+  .vault-item .a { font-size: 13.5px; font-weight: 600; word-break: break-all; }
+  .vault-item .b { font-size: 11px; color: #a1a1aa; margin-top: 2px; }
+  .vault-item.active .a { color: #ff6a00; }
+  /* sheet */
+  .sheet-bg { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; z-index: 50; }
+  .sheet-bg.open { display: block; }
+  .sheet { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-radius: 20px 20px 0 0; padding: 18px 16px 26px; z-index: 51; max-width: 560px; margin: 0 auto; display: none; }
+  .sheet.open { display: block; }
+  .sheet h3 { font-size: 18px; margin-bottom: 12px; }
+  .tabs { display: flex; background: #f4f4f5; border-radius: 999px; padding: 4px; margin-bottom: 14px; }
+  .tabs button { flex: 1; background: transparent; color: #52525b; padding: 9px; border-radius: 999px; font-size: 14px; }
+  .tabs button.on { background: #fff; color: #1c1c1e; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+  .sheet label { font-size: 13px; color: #71717a; display: block; margin-bottom: 6px; }
+  .sheet input, .sheet select { width: 100%; font-family: inherit; font-size: 16px; padding: 12px; border: 1px solid #d4d4d8; border-radius: 12px; margin-bottom: 8px; background: #fff; color: #1c1c1e; }
+  .preview { background: #f4f4f5; border-radius: 12px; padding: 12px; font-size: 15px; font-weight: 700; word-break: break-all; margin-bottom: 4px; }
+  .preview small { display: block; font-size: 12px; font-weight: 400; color: #71717a; margin-top: 4px; }
+  .toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); background: #1c1c1e; color: #fff; font-size: 14px; padding: 10px 18px; border-radius: 999px; z-index: 99; display: none; white-space: nowrap; }
+  .err { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; border-radius: 12px; padding: 12px; font-size: 14px; margin-bottom: 14px; display: none; }
+  .err button { margin-top: 8px; }
+  .vault-empty { font-size: 13px; color: #a1a1aa; text-align: center; padding: 12px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>TempMail</h1>
+    <span class="status"><span class="dot" id="statusDot"></span><span id="statusText">រួចរាល់</span></span>
+  </header>
+
+  <div class="err" id="errBox"><span id="errText"></span><br><button class="btn-ghost btn-small" onclick="hideErr()">បិទ</button></div>
+
+  <!-- active address -->
+  <div class="card">
+    <div class="label">អាសយដ្ឋានបណ្តោះអាសន្នរបស់អ្នក</div>
+    <div class="addr" id="activeAddr">កំពុងបង្កើត…</div>
+    <div class="row">
+      <button class="btn-ghost" onclick="copyAddr()">📋 ចម្លង</button>
+      <button class="btn-primary" onclick="openSheet()">⚡ អាសយដ្ឋានថ្មី</button>
+      <button class="btn-danger" id="delBtn" onclick="deleteAddr()">🗑 លុប</button>
+    </div>
+    <div class="note">ប្រើអាសយដ្ឋាននេះដើម្បីចុះឈ្មោះ — សំបុត្រនឹងមកដល់ក្នុងប្រអប់ខាងក្រោមដោយស្វ័យប្រវត្តិ។ សំបុត្រនឹងលុបដោយស្វ័យប្រវត្តិក្នុងរយៈពេលខ្លី។</div>
+  </div>
+
+  <!-- OTP -->
+  <div class="card otp-card" id="otpCard" style="display:none">
+    <div class="label">🔑 រកឃើញលេខកូដ OTP</div>
+    <div class="otp-code" id="otpCode"></div>
+    <div class="otp-from" id="otpFrom"></div>
+    <button class="btn-primary" style="width:100%" onclick="copyOtp()">ចម្លង OTP</button>
+  </div>
+
+  <!-- inbox -->
+  <div class="card">
+    <div class="inbox-head">
+      <h2>✉️ ប្រអប់សំបុត្រ <span class="count" id="msgCount" style="display:none">0</span></h2>
+      <button class="btn-ghost btn-small" onclick="loadInbox(true)">↻ ផ្ទុកឡើងវិញ</button>
+    </div>
+    <div id="inboxList"></div>
+    <div class="auto">● ឆែកសំបុត្ររាល់ 10 វិនាទីដោយស្វ័យប្រវត្តិ</div>
+  </div>
+
+  <!-- vault -->
+  <div class="card">
+    <div class="inbox-head">
+      <h2>🗄️ ឃ្លាំងអាសយដ្ឋាន</h2>
+      <button class="btn-ghost btn-small" onclick="renderVault()">មើល</button>
+    </div>
+    <div id="vaultList"></div>
+  </div>
+</div>
+
+<!-- new address sheet -->
+<div class="sheet-bg" id="sheetBg" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <h3>អាសយដ្ឋានថ្មី</h3>
+  <div class="tabs">
+    <button id="tabAuto" class="on" onclick="setMode('auto')">ស្វ័យប្រវត្តិ</button>
+    <button id="tabCustom" onclick="setMode('custom')">ដាក់ឈ្មោះខ្លួនឯង</button>
+  </div>
+  <div id="customBox" style="display:none">
+    <label>ឈ្មោះអាសយដ្ឋាន (អក្សរអង់គ្លេស និងលេខតែប៉ុណ្ណោះ — សញ្ញា «.» ប្រើមិនបានទេ)</label>
+    <input id="customName" placeholder="ឧ. sokha99" oninput="updatePreview()" maxlength="30">
+  </div>
+  <label>Domain</label>
+  <select id="domainSel" onchange="updatePreview()"></select>
+  <div class="preview" id="previewAddr">…</div>
+  <div class="row" style="margin-top:12px">
+    <button class="btn-ghost" onclick="closeSheet()">បោះបង់</button>
+    <button class="btn-primary" onclick="createAddress()">បង្កើត</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const LS_ACTIVE = 'tempmail_active';
+const LS_VAULT = 'tempmail_vault';
+let active = null;      // {address, accountId, token}
+let domains = ['fldubai.com'];
+let mode = 'auto';
+let messages = [];
+let openedId = null;
+let currentOtp = '';
+
+function $(id) { return document.getElementById(id); }
+function toast(t) { const el = $('toast'); el.textContent = t; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 2200); }
+function showErr(t) { $('errText').textContent = t; $('errBox').style.display = 'block'; }
+function hideErr() { $('errBox').style.display = 'none'; }
+function setStatus(ok, txt) { $('statusDot').className = 'dot' + (ok ? '' : ' off'); $('statusText').textContent = txt; }
+
+function loadVault() { try { return JSON.parse(localStorage.getItem(LS_VAULT) || '[]'); } catch (e) { return []; } }
+function saveVault(v) { localStorage.setItem(LS_VAULT, JSON.stringify(v)); }
+function loadActive() { try { return JSON.parse(localStorage.getItem(LS_ACTIVE) || 'null'); } catch (e) { return null; } }
+function saveActive(a) { if (a) localStorage.setItem(LS_ACTIVE, JSON.stringify(a)); else localStorage.removeItem(LS_ACTIVE); }
+
+async function api(path, opts) {
+  const res = await fetch(path, opts);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || ('កំហុស ' + res.status));
+  return data;
+}
+
+function cleanName(raw) { return String(raw || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
+
+// ---- domains -------------------------------------------------------------
+async function loadDomains() {
+  try {
+    const d = await api('/api/domains');
+    if (d.domains && d.domains.length) domains = d.domains;
+  } catch (e) { /* keep default */ }
+  $('domainSel').innerHTML = domains.map(d => '<option value="' + d + '">@' + d + '</option>').join('');
+  updatePreview();
+}
+
+// ---- address -------------------------------------------------------------
+async function createAddress() {
+  const domain = $('domainSel').value || domains[0];
+  const username = mode === 'custom' ? cleanName($('customName').value) : '';
+  if (mode === 'custom' && !username) { toast('សូមដាក់ឈ្មោះជាមុន'); return; }
+  closeSheet();
+  setStatus(false, 'កំពុងបង្កើត…');
+  try {
+    const a = await api('/api/address', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: username || undefined, domain }),
+    });
+    setActive(a);
+    toast('បង្កើតអាសយដ្ឋានថ្មីរួចហើយ ✓');
+  } catch (e) {
+    setStatus(false, 'មានបញ្ហា');
+    showErr('បង្កើតអាសយដ្ឋានមិនបាន៖ ' + e.message);
+  }
+}
+
+function setActive(a) {
+  active = a;
+  saveActive(a);
+  $('activeAddr').textContent = a.address;
+  const v = loadVault();
+  if (!v.some(x => x.address === a.address)) {
+    v.unshift({ address: a.address, accountId: a.accountId, token: a.token, created: new Date().toISOString() });
+    saveVault(v);
+  }
+  $('delBtn').textContent = '🗑 លុប';
+  $('delBtn').classList.remove('armed');
+  messages = []; openedId = null; currentOtp = '';
+  $('otpCard').style.display = 'none';
+  renderVault();
+  loadInbox(true);
+  setStatus(true, 'រួចរាល់');
+}
+
+function copyAddr() {
+  if (!active) return;
+  navigator.clipboard.writeText(active.address).then(() => toast('ចម្លងអាសយដ្ឋានរួចហើយ ✓'));
+}
+
+let delArmed = false;
+async function deleteAddr() {
+  if (!active) return;
+  if (!delArmed) {
+    delArmed = true;
+    $('delBtn').textContent = 'ចុចម្ដងទៀតដើម្បីលុប';
+    $('delBtn').classList.add('armed');
+    setTimeout(() => { delArmed = false; $('delBtn').textContent = '🗑 លុប'; $('delBtn').classList.remove('armed'); }, 4000);
+    return;
+  }
+  delArmed = false;
+  try {
+    await api('/api/address/' + encodeURIComponent(active.accountId), {
+      method: 'DELETE',
+      headers: { Authorization: 'Bearer ' + active.token },
+    });
+  } catch (e) { /* account may already be gone — continue locally */ }
+  const v = loadVault().filter(x => x.address !== active.address);
+  saveVault(v);
+  saveActive(null);
+  active = null;
+  $('activeAddr').textContent = '—';
+  messages = [];
+  renderInbox();
+  $('otpCard').style.display = 'none';
+  renderVault();
+  toast('លុបអាសយដ្ឋានរួចហើយ');
+  createAddressAuto();
+}
+
+async function createAddressAuto() {
+  try {
+    const a = await api('/api/address', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) });
+    setActive(a);
+  } catch (e) {
+    setStatus(false, 'មានបញ្ហា');
+    showErr('បង្កើតអាសយដ្ឋានមិនបាន៖ ' + e.message + ' — ចុច «អាសយដ្ឋានថ្មី» ដើម្បីសាកម្ដងទៀត។');
+  }
+}
+
+// ---- sheet ---------------------------------------------------------------
+function openSheet() { $('sheetBg').classList.add('open'); $('sheet').classList.add('open'); updatePreview(); }
+function closeSheet() { $('sheetBg').classList.remove('open'); $('sheet').classList.remove('open'); }
+function setMode(m) {
+  mode = m;
+  $('tabAuto').classList.toggle('on', m === 'auto');
+  $('tabCustom').classList.toggle('on', m === 'custom');
+  $('customBox').style.display = m === 'custom' ? 'block' : 'none';
+  updatePreview();
+}
+function updatePreview() {
+  const domain = $('domainSel').value || domains[0] || 'fldubai.com';
+  let preview, note = '';
+  if (mode === 'custom') {
+    const raw = $('customName').value || '';
+    const cleaned = cleanName(raw);
+    preview = (cleaned || 'ឈ្មោះរបស់អ្នក') + '@' + domain;
+    if (raw && cleaned !== raw.toLowerCase()) note = 'ឈ្មោះនឹងក្លាយជា «' + cleaned + '» — តួអក្សរដែលប្រើមិនបាននឹងត្រូវដកចេញ។';
+  } else {
+    preview = 'user••••••••••@' + domain;
+    note = 'ប្រព័ន្ធនឹងបង្កើតឈ្មោះដោយស្វ័យប្រវត្តិ។';
+  }
+  $('previewAddr').innerHTML = preview + (note ? '<small>' + note + '</small>' : '');
+}
+
+// ---- inbox ---------------------------------------------------------------
+function findOtp(text) {
+  if (!text) return '';
+  // common OTP patterns: "code is 123456", "123456 is your code", standalone 4-8 digits
+  const patterns = [
+    /(?:code|otp|verification|verify|password)[^\d]{0,30}(\d{4,8})/i,
+    /(\d{4,8})[^\d]{0,30}(?:code|otp|verification|is your)/i,
+    /\b(\d{6})\b/,
+    /\b(\d{4,8})\b/,
+  ];
+  for (const p of patterns) {
+    const m = text.match(p);
+    if (m) return m[1];
+  }
+  return '';
+}
+
+async function loadInbox(manual) {
+  if (!active) return;
+  try {
+    const d = await api('/api/messages', { headers: { Authorization: 'Bearer ' + active.token } });
+    const prevCount = messages.length;
+    messages = d.messages || [];
+    renderInbox();
+    // OTP: check newest messages first
+    for (const m of messages) {
+      const otp = findOtp((m.subject || '') + ' ' + (m.intro || ''));
+      if (otp) {
+        if (otp !== currentOtp) {
+          currentOtp = otp;
+          $('otpCode').textContent = otp;
+          $('otpFrom').textContent = 'ពី៖ ' + (m.from && (m.from.address || m.from.name) ? (m.from.address || m.from.name) : 'សំបុត្រថ្មី');
+          $('otpCard').style.display = 'block';
+        }
+        break;
+      }
+    }
+    if (messages.length > prevCount && prevCount > 0) toast('មានសំបុត្រថ្មី ' + (messages.length - prevCount) + ' ✉️');
+    setStatus(true, 'រួចរាល់');
+    hideErr();
+  } catch (e) {
+    setStatus(false, 'មានបញ្ហា');
+    if (manual) showErr('ឆែកសំបុត្រមិនបាន៖ ' + e.message);
+  }
+}
+
+function fmtDate(s) {
+  try { return new Date(s).toLocaleString('km-KH', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' }); } catch (e) { return s || ''; }
+}
+function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+function renderInbox() {
+  const box = $('inboxList');
+  const c = $('msgCount');
+  if (!messages.length) {
+    c.style.display = 'none';
+    box.innerHTML = '<div class="empty"><div class="big">📭</div>មិនទាន់មានសំបុត្រទេ<br>ប្រើអាសយដ្ឋានខាងលើដើម្បីចុះឈ្មោះ — សំបុត្រនឹងបង្ហាញនៅទីនេះដោយស្វ័យប្រវត្តិ។</div>';
+    return;
+  }
+  c.style.display = '';
+  c.textContent = messages.length;
+  box.innerHTML = messages.map(m => {
+    const from = (m.from && (m.from.address || m.from.name)) || 'មិនស្គាល់';
+    const open = openedId === m.id;
+    return '<div class="msg' + (open ? ' unread' : '') + '" onclick="toggleMsg(\'' + m.id + '\')">'
+      + '<div class="from">' + esc(from) + '</div>'
+      + '<div class="subject">' + esc(m.subject || '(គ្មានចំណងជើង)') + '</div>'
+      + '<div class="intro">' + esc(m.intro || '') + '</div>'
+      + '<div class="date">' + esc(fmtDate(m.date)) + '</div>'
+      + (open ? '<div class="msg-body" id="body-' + m.id + '">កំពុងបើក…</div>' : '')
+      + '</div>';
+  }).join('');
+}
+
+async function toggleMsg(id) {
+  if (openedId === id) { openedId = null; renderInbox(); return; }
+  openedId = id;
+  renderInbox();
+  try {
+    const m = await api('/api/message/' + encodeURIComponent(id), { headers: { Authorization: 'Bearer ' + active.token } });
+    const el = $('body-' + id);
+    if (!el) return;
+    const otp = findOtp((m.subject || '') + ' ' + (m.text || ''));
+    let html = '';
+    if (otp) { currentOtp = otp; $('otpCode').textContent = otp; $('otpFrom').textContent = 'ពី៖ ' + esc((m.from && m.from.address) || ''); $('otpCard').style.display = 'block'; }
+    html += '<div style="white-space:pre-wrap;word-break:break-word">' + esc(m.text || '(គ្មានខ្លឹមសារ)') + '</div>';
+    el.innerHTML = html;
+  } catch (e) {
+    const el = $('body-' + id);
+    if (el) el.textContent = 'បើកសំបុត្រមិនបាន៖ ' + e.message;
+  }
+}
+
+function copyOtp() {
+  if (!currentOtp) return;
+  navigator.clipboard.writeText(currentOtp).then(() => toast('ចម្លង OTP រួចហើយ ✓'));
+}
+
+// ---- vault ---------------------------------------------------------------
+function renderVault() {
+  const v = loadVault();
+  const box = $('vaultList');
+  if (!v.length) { box.innerHTML = '<div class="vault-empty">មិនទាន់មានអាសយដ្ឋានរក្សាទុកទេ</div>'; return; }
+  box.innerHTML = v.map(x => {
+    const isActive = active && x.address === active.address;
+    return '<div class="vault-item' + (isActive ? ' active' : '') + '">'
+      + '<div><div class="a">' + esc(x.address) + '</div><div class="b">' + (isActive ? '● កំពុងប្រើ' : esc(fmtDate(x.created))) + '</div></div>'
+      + '<div style="display:flex;gap:6px;flex:none">'
+      + (isActive ? '' : '<button class="btn-ghost btn-small" onclick="restoreAddr(\'' + esc(x.address) + '\')">ប្រើវិញ</button>')
+      + '<button class="btn-ghost btn-small" onclick="removeVault(\'' + esc(x.address) + '\')">✕</button>'
+      + '</div></div>';
+  }).join('');
+}
+
+function restoreAddr(address) {
+  const v = loadVault();
+  const item = v.find(x => x.address === address);
+  if (!item) return;
+  setActive({ address: item.address, accountId: item.accountId, token: item.token });
+  toast('បើកអាសយដ្ឋានចាស់វិញរួចហើយ ✓');
+}
+function removeVault(address) {
+  saveVault(loadVault().filter(x => x.address !== address));
+  renderVault();
+}
+
+// ---- boot ----------------------------------------------------------------
+(async function boot() {
+  await loadDomains();
+  renderVault();
+  const saved = loadActive();
+  if (saved && saved.address && saved.token) {
+    active = saved;
+    $('activeAddr').textContent = saved.address;
+    loadInbox(false);
+    setStatus(true, 'រួចរាល់');
+  } else {
+    createAddressAuto();
+  }
+  setInterval(() => loadInbox(false), 10000);
+})();
+</script>
+</body>
+</html>

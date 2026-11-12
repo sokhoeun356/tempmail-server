@@ -1,0 +1,1 @@
+{"dependencies":{"express":"^4.19.2"},"description":"Own TempMail server — proxies mail.tm server-side so the TempMail web app can receive real mail (incl. verification codes) and be shared publicly.","engines":{"node":">=18"},"main":"server.js","name":"tempmail-server","scripts":{"start":"node server.js"},"version":"1.0.0"}
