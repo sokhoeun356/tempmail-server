@@ -476,7 +476,7 @@ function goPage(p) {
     $('page-' + x).classList.toggle('active', x === p);
     $('nav-' + x).classList.toggle('on', x === p);
   });
-  if (p === 'inbox') loadInbox(false);
+  if (p === 'inbox') { renderInbox(); loadInbox(false); }
   if (p === 'history') { renderListTab(); }
   if (p === 'settings') renderSettingsInfo();
   window.scrollTo({ top: 0 });
@@ -706,8 +706,7 @@ async function loadInbox(manual) {
       createAddressAuto();
       return;
     }
-    setStatus(false, 'មានបញ្ហា');
-    if (manual) showErr('ឆែកសំបុត្រមិនបាន៖ ' + e.message);
+    if (manual) { setStatus(false, 'មានបញ្ហា'); showErr('ឆែកសំបុត្រមិនបាន៖ ' + e.message); }
   }
 }
 
@@ -904,6 +903,7 @@ function signupWith(address) {
   await loadDomains();
   renderListTab();
   renderSettingsInfo();
+  renderInbox();
   const saved = loadActive();
   if (saved && saved.address && saved.token) {
     active = saved;
