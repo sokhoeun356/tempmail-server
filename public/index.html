@@ -400,6 +400,12 @@
         <span class="chev">›</span>
       </div>
     </div>
+    <div class="sec-label">Admin</div>
+    <div class="card" style="padding:14px 16px">
+      <div style="font-size:13px;color:var(--sub)">Purchase requests go to the admin</div>
+      <div style="font-size:16px;font-weight:800;margin-top:2px">sokhoeun356@gmail.com</div>
+      <div style="font-size:13px;color:var(--sub);margin-top:4px">Telegram: @yemsokhoeun_9999</div>
+    </div>
     <div style="text-align:center;padding:14px 0 4px"><span class="status"><span class="dot" id="statusDot"></span><span id="statusText">រួចរាល់</span></span></div>
   </div>
 </div>
@@ -566,6 +572,15 @@
   <h3 id="infoTitle">Terms of Use</h3>
   <div class="note" id="infoBody" style="margin:0 0 12px"></div>
   <div class="row"><button class="btn-primary" onclick="closeAllSheets()">យល់ព្រម</button></div>
+</div>
+
+<div class="sheet" id="buySheet">
+  <h3 id="buyTitle">Buy Premium</h3>
+  <div class="note" id="buyBody" style="margin:0 0 12px;white-space:pre-line"></div>
+  <div class="row">
+    <button class="btn-primary" onclick="sendBuyEmail()"><svg width="16" height="16" viewBox="0 0 24 24" style="vertical-align:-3px;margin-right:6px"><use href="#ic-mail"/></svg>Send by Email</button>
+    <button class="btn-ghost" onclick="contactAdminTelegram()"><svg width="16" height="16" viewBox="0 0 24 24" style="vertical-align:-3px;margin-right:6px"><use href="#ic-chat"/></svg>Telegram</button>
+  </div>
 </div>
 
 <div class="sheet" id="gcidSheet">
@@ -836,7 +851,7 @@ async function createAddressAuto() { await createAddressWith(''); }
 function openSheetEl(id) { $('sheetBg').classList.add('open'); $(id).classList.add('open'); }
 function closeAllSheets() {
   $('sheetBg').classList.remove('open');
-  ['customSheet', 'qrSheet', 'signupSheet', 'infoSheet', 'gcidSheet'].forEach(id => $(id).classList.remove('open'));
+  ['customSheet', 'qrSheet', 'signupSheet', 'infoSheet', 'buySheet', 'gcidSheet'].forEach(id => $(id).classList.remove('open'));
 }
 function openSheet() { updatePreview(); openSheetEl('customSheet'); }
 function openQrSheet() {
@@ -857,10 +872,29 @@ function selectPlan(id) {
   selectedPlan = id;
   document.querySelectorAll('#premPlans .plan').forEach(p => p.classList.toggle('on', p.dataset.plan === id));
 }
+const ADMIN_EMAIL = 'sokhoeun356@gmail.com';
+const ADMIN_TELEGRAM = 'yemsokhoeun_9999';
+const PLAN_NAMES = { monthly: 'Monthly — $0.30', '3months': '3 Months — $6.99', '6months': '6 Months — $11.99', yearly: 'Yearly — $19.99' };
 function buyPremium() {
-  const names = { monthly: 'Monthly — $0.30', '3months': '3 Months — $6.99', '6months': '6 Months — $11.99', yearly: 'Yearly — $19.99' };
-  window.open('https://t.me/yemsokhoeun_9999', '_blank');
-  toast('ទាក់ទង @yemsokhoeun_9999 ដើម្បីទិញ ' + (names[selectedPlan] || 'Premium'));
+  const plan = PLAN_NAMES[selectedPlan] || 'Premium';
+  const addr = active ? active.address : '(no address yet)';
+  $('buyTitle').textContent = 'Buy ' + plan;
+  $('buyBody').textContent = 'Plan: ' + plan + '\nTempMail: ' + addr + '\n\nAdmin (' + ADMIN_EMAIL + ') will reply with payment details and activate your Premium.';
+  openSheetEl('buySheet');
+}
+function sendBuyEmail() {
+  const plan = PLAN_NAMES[selectedPlan] || 'Premium';
+  const addr = active ? active.address : '(no address yet)';
+  const subject = encodeURIComponent('TempMail Premium — ' + plan);
+  const body = encodeURIComponent('Hello,\n\nI want to buy TempMail Premium.\n\nPlan: ' + plan + '\nTempMail address: ' + addr + '\nDate: ' + new Date().toISOString().slice(0, 10) + '\n\nPlease send me the payment details.');
+  closeAllSheets();
+  location.href = 'mailto:' + ADMIN_EMAIL + '?subject=' + subject + '&body=' + body;
+  toast('បើកអ៊ីមែលដើម្បីផ្ញើសំណើទៅ Admin…');
+}
+function contactAdminTelegram() {
+  closeAllSheets();
+  window.open('https://t.me/' + ADMIN_TELEGRAM, '_blank');
+  toast('ទាក់ទង @' + ADMIN_TELEGRAM + ' ដើម្បីទិញ Premium');
 }
 function restorePurchases() { toast('មិនទាន់មានការទិញណាមួយ — Premium ទើបតែចាប់ផ្ដើម'); }
 function openInfoSheet(kind) {
@@ -1305,8 +1339,9 @@ renderAuthCard();
 <script>
 // ---- Continue with Google (Google Identity Services) ----------------------
 const LS_GCID = 'tempmail_google_client_id';
+const DEFAULT_GCID = '459985685619-8fc2j8nah9a3k8i7d16q4pubhhii5j0b.apps.googleusercontent.com';
 let gsiLoaded = false;
-function getGoogleClientId() { return (localStorage.getItem(LS_GCID) || '').trim(); }
+function getGoogleClientId() { return (localStorage.getItem(LS_GCID) || '').trim() || DEFAULT_GCID; }
 function renderGcidVal() {
   const el = $('gcidVal');
   if (el) el.textContent = getGoogleClientId() ? 'On' : 'Off';
