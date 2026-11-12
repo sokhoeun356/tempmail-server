@@ -163,6 +163,10 @@
   .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.18); }
   .dot.off { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.15); }
   .vault-empty { font-size: 13px; color: var(--sub); text-align: center; padding: 12px 0; }
+  .auth-input { width: 100%; font-family: inherit; font-size: 16px; padding: 15px 0; border: none; border-bottom: 1px solid var(--border); background: transparent; color: var(--text); outline: none; }
+  .auth-input.no-b { border-bottom: none; }
+  .eye { background: none; border: none; font-size: 20px; cursor: pointer; padding: 8px; flex: none; }
+  .auth-check { width: 20px; height: 20px; accent-color: #2563eb; margin-top: 2px; flex: none; }
 </style>
 </head>
 <body>
@@ -256,6 +260,7 @@
 
   <!-- ============ SETTINGS PAGE ============ -->
   <div class="page" id="page-settings">
+    <div id="authCard"></div>
     <div class="card">
       <div style="display:flex;gap:12px;align-items:center">
         <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;flex:none">📧</div>
@@ -356,6 +361,62 @@
     <button class="btn-ghost" onclick="signup('https://muse.ai')">🤖 Muse AI</button>
     <button class="btn-ghost" onclick="signup('https://accounts.google.com/signup')">🔍 Google</button>
     <button class="btn-ghost" onclick="signup('https://www.tiktok.com/signup')">🎵 TikTok</button>
+  </div>
+</div>
+
+<!-- auth overlay (GoMail-style full screen) -->
+<div id="authOverlay" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:60;overflow-y:auto">
+  <div style="max-width:560px;margin:0 auto;padding:14px 16px 40px">
+    <button class="icon-btn" onclick="closeAuth()">‹</button>
+    <div style="text-align:center;padding:16px 0 8px">
+      <div style="width:88px;height:88px;margin:0 auto 18px;border-radius:22px;background:#fff;box-shadow:0 4px 16px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;font-size:44px">📧</div>
+      <h2 id="authTitle" style="font-size:28px">Create Account</h2>
+      <p id="authSub" style="color:var(--sub);font-size:15px;margin-top:6px">Sign up free — no credit card needed.</p>
+    </div>
+
+    <!-- create -->
+    <div id="authCreate">
+      <div class="card" style="padding:2px 16px">
+        <input class="auth-input" id="cuName" placeholder="Full Name" autocomplete="name">
+        <input class="auth-input no-b" id="cuEmail" placeholder="Email" type="email" inputmode="email" autocomplete="email">
+      </div>
+      <div class="card" style="padding:2px 16px">
+        <div style="display:flex;align-items:center"><input class="auth-input" id="cuPass" placeholder="Password" type="password" autocomplete="new-password" style="flex:1"><button class="eye" onclick="togglePw('cuPass',this)">👁️</button></div>
+        <div style="display:flex;align-items:center"><input class="auth-input no-b" id="cuPass2" placeholder="Confirm Password" type="password" autocomplete="new-password" style="flex:1"><button class="eye" onclick="togglePw('cuPass2',this)">👁️</button></div>
+      </div>
+      <p class="note">Use at least 8 characters, including a number.</p>
+      <label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;margin:12px 0;cursor:pointer"><input type="checkbox" id="cuTerms" class="auth-check"> <span>I agree to the <span style="color:#2563eb">Terms of Service</span> and <span style="color:#2563eb">Privacy Policy</span></span></label>
+      <button class="btn-primary" style="width:100%;padding:15px;font-size:16px;border-radius:999px" onclick="doCreateAccount()">Create Account</button>
+      <p style="text-align:center;margin-top:18px;color:var(--sub);font-size:14px">Already have an account? <span style="color:#2563eb;font-weight:700;cursor:pointer" onclick="showAuth('signin')">Sign In</span></p>
+    </div>
+
+    <!-- sign in -->
+    <div id="authSignin" style="display:none">
+      <div class="card" style="padding:2px 16px">
+        <input class="auth-input" id="siEmail" placeholder="Email" type="email" inputmode="email" autocomplete="email">
+        <div style="display:flex;align-items:center"><input class="auth-input no-b" id="siPass" placeholder="Password" type="password" autocomplete="current-password" style="flex:1"><button class="eye" onclick="togglePw('siPass',this)">👁️</button></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin:12px 0">
+        <label style="display:flex;gap:8px;align-items:center;font-size:14px;cursor:pointer"><input type="checkbox" id="siRemember" class="auth-check" checked> Remember me</label>
+        <span style="color:#2563eb;font-weight:700;font-size:14px;cursor:pointer" onclick="showAuth('forgot')">Forgot password?</span>
+      </div>
+      <button class="btn-primary" style="width:100%;padding:15px;font-size:16px;border-radius:999px" onclick="doSignIn()">Sign In</button>
+      <p style="text-align:center;margin-top:18px;color:var(--sub);font-size:14px">Don't have an account? <span style="color:#2563eb;font-weight:700;cursor:pointer" onclick="showAuth('create')">Create account</span></p>
+    </div>
+
+    <!-- forgot -->
+    <div id="authForgot" style="display:none">
+      <div class="card" style="padding:2px 16px">
+        <input class="auth-input" id="fpEmail" placeholder="Email" type="email" inputmode="email" autocomplete="email">
+        <div style="display:flex;align-items:center"><input class="auth-input" id="fpPass" placeholder="New Password" type="password" autocomplete="new-password" style="flex:1"><button class="eye" onclick="togglePw('fpPass',this)">👁️</button></div>
+        <div style="display:flex;align-items:center"><input class="auth-input no-b" id="fpPass2" placeholder="Confirm New Password" type="password" autocomplete="new-password" style="flex:1"><button class="eye" onclick="togglePw('fpPass2',this)">👁️</button></div>
+      </div>
+      <p class="note">Use at least 8 characters, including a number.</p>
+      <button class="btn-primary" style="width:100%;padding:15px;font-size:16px;border-radius:999px" onclick="doResetPw()">Reset Password</button>
+      <p style="text-align:center;margin-top:18px;color:var(--sub);font-size:14px"><span style="color:#2563eb;font-weight:700;cursor:pointer" onclick="showAuth('signin')">← Back to Sign In</span></p>
+    </div>
+
+    <p id="authErr" style="color:#dc2626;font-size:14px;text-align:center;margin-top:14px;display:none"></p>
   </div>
 </div>
 
@@ -916,6 +977,140 @@ function signupWith(address) {
   }
   setInterval(() => loadInbox(false), 10000);
 })();
+</script>
+<script>
+// ---- accounts (local, like MovAi: salted-hash, @gmail.com only) --------------
+const LS_USERS = 'tempmail_users';
+const LS_SESSION = 'tempmail_session';
+let session = null;
+
+function getUsers() { try { return JSON.parse(localStorage.getItem(LS_USERS) || '[]'); } catch (e) { return []; } }
+function saveUsers(u) { localStorage.setItem(LS_USERS, JSON.stringify(u)); }
+function getSession() {
+  try { return JSON.parse(localStorage.getItem(LS_SESSION) || sessionStorage.getItem(LS_SESSION) || 'null'); } catch (e) { return null; }
+}
+function setSession(s, remember) {
+  session = s;
+  if (s) {
+    if (remember) { localStorage.setItem(LS_SESSION, JSON.stringify(s)); sessionStorage.removeItem(LS_SESSION); }
+    else { sessionStorage.setItem(LS_SESSION, JSON.stringify(s)); localStorage.removeItem(LS_SESSION); }
+  } else {
+    localStorage.removeItem(LS_SESSION); sessionStorage.removeItem(LS_SESSION);
+  }
+  renderAuthCard();
+}
+function bufToHex(buf) { return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join(''); }
+async function hashPw(salt, pw) {
+  const enc = new TextEncoder();
+  if (window.crypto && crypto.subtle) {
+    const h = await crypto.subtle.digest('SHA-256', enc.encode(salt + '::' + pw));
+    return bufToHex(h);
+  }
+  let h1 = 0x811c9dc5, h2 = 0x01000193;
+  const s = salt + '::' + pw;
+  for (let i = 0; i < s.length; i++) { h1 = Math.imul(h1 ^ s.charCodeAt(i), 16777619) >>> 0; h2 = Math.imul(h2 ^ s.charCodeAt(i), 31) >>> 0; }
+  return 'fb' + h1.toString(16) + h2.toString(16);
+}
+function makeSalt() {
+  const a = new Uint8Array(16);
+  if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(a);
+  else for (let i = 0; i < 16; i++) a[i] = Math.floor(Math.random() * 256);
+  return bufToHex(a);
+}
+function showAuthErr(t) { const el = $('authErr'); el.textContent = t || ''; el.style.display = t ? 'block' : 'none'; }
+function showAuth(mode) {
+  showAuthErr('');
+  $('authCreate').style.display = mode === 'create' ? 'block' : 'none';
+  $('authSignin').style.display = mode === 'signin' ? 'block' : 'none';
+  $('authForgot').style.display = mode === 'forgot' ? 'block' : 'none';
+  $('authTitle').textContent = mode === 'create' ? 'Create Account' : mode === 'signin' ? 'Sign In' : 'Reset Password';
+  $('authSub').textContent = mode === 'create' ? 'Sign up free — no credit card needed.' : mode === 'signin' ? 'Sign in to access your inbox and premium features.' : 'Enter your email and a new password.';
+}
+function openAuth(mode) { showAuth(mode || 'create'); $('authOverlay').style.display = 'block'; }
+function closeAuth() { $('authOverlay').style.display = 'none'; }
+function togglePw(id, btn) {
+  const el = $(id);
+  const show = el.type === 'password';
+  el.type = show ? 'text' : 'password';
+  btn.textContent = show ? '🙈' : '👁️';
+}
+async function doCreateAccount() {
+  const name = $('cuName').value.trim();
+  const email = $('cuEmail').value.trim().toLowerCase();
+  const pw = $('cuPass').value;
+  const pw2 = $('cuPass2').value;
+  if (!name) return showAuthErr('សូមដាក់ឈ្មោះរបស់អ្នក');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showAuthErr('អ៊ីមែលមិនត្រឹមត្រូវទេ');
+  if (!email.endsWith('@gmail.com')) return showAuthErr('សូមប្រើអ៊ីមែល @gmail.com តែប៉ុណ្ណោះ');
+  if (pw.length < 8 || !/\d/.test(pw)) return showAuthErr('ពាក្យសម្ងាត់ត្រូវមានយ៉ាងហោចណាស់ 8 តួ និងមានលេខមួយ');
+  if (pw !== pw2) return showAuthErr('ពាក្យសម្ងាត់ទាំងពីរមិនដូចគ្នាទេ');
+  if (!$('cuTerms').checked) return showAuthErr('សូមយល់ព្រមនឹងលក្ខខណ្ឌជាមុន');
+  const users = getUsers();
+  if (users.some(u => u.email === email)) return showAuthErr('គណនីនេះមានរួចហើយ — សូម Sign In');
+  const salt = makeSalt();
+  const hash = await hashPw(salt, pw);
+  users.push({ name, email, salt, hash, created: new Date().toISOString() });
+  saveUsers(users);
+  setSession({ name, email }, true);
+  closeAuth();
+  toast('បង្កើតគណនីរួចហើយ ✓ ស្វាគមន៍ ' + name);
+}
+async function doSignIn() {
+  const email = $('siEmail').value.trim().toLowerCase();
+  const pw = $('siPass').value;
+  if (!email || !pw) return showAuthErr('សូមដាក់អ៊ីមែល និងពាក្យសម្ងាត់');
+  const u = getUsers().find(x => x.email === email);
+  if (!u) return showAuthErr('រកមិនឃើញគណនីនេះទេ — សូមបង្កើតគណនីជាមុន');
+  const hash = await hashPw(u.salt, pw);
+  if (hash !== u.hash) return showAuthErr('ពាក្យសម្ងាត់មិនត្រឹមត្រូវទេ');
+  setSession({ name: u.name, email: u.email }, $('siRemember').checked);
+  closeAuth();
+  toast('ចូលគណនីរួចហើយ ✓ ស្វាគមន៍ ' + u.name);
+}
+async function doResetPw() {
+  const email = $('fpEmail').value.trim().toLowerCase();
+  const pw = $('fpPass').value;
+  const pw2 = $('fpPass2').value;
+  if (!email || !pw) return showAuthErr('សូមដាក់អ៊ីមែល និងពាក្យសម្ងាត់ថ្មី');
+  const users = getUsers();
+  const u = users.find(x => x.email === email);
+  if (!u) return showAuthErr('រកមិនឃើញគណនីនេះទេ');
+  if (pw.length < 8 || !/\d/.test(pw)) return showAuthErr('ពាក្យសម្ងាត់ត្រូវមានយ៉ាងហោចណាស់ 8 តួ និងមានលេខមួយ');
+  if (pw !== pw2) return showAuthErr('ពាក្យសម្ងាត់ទាំងពីរមិនដូចគ្នាទេ');
+  u.salt = makeSalt();
+  u.hash = await hashPw(u.salt, pw);
+  saveUsers(users);
+  showAuth('signin');
+  toast('កំណត់ពាក្យសម្ងាត់ថ្មីរួចហើយ — សូម Sign In');
+}
+function doSignOut() { setSession(null, true); toast('ចេញពីគណនីរួចហើយ'); }
+function renderAuthCard() {
+  const box = $('authCard');
+  if (!box) return;
+  if (session) {
+    const initial = (session.name || session.email || '?')[0].toUpperCase();
+    box.innerHTML = '<div class="card">'
+      + '<div style="display:flex;gap:12px;align-items:center">'
+      + '<div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;flex:none">' + esc(initial) + '</div>'
+      + '<div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:800">' + esc(session.name) + '</div>'
+      + '<div style="font-size:13px;color:var(--sub);word-break:break-all">' + esc(session.email) + '</div></div>'
+      + '<button class="btn-ghost btn-small" onclick="doSignOut()">Sign Out</button>'
+      + '</div></div>';
+  } else {
+    box.innerHTML = '<div class="card">'
+      + '<div style="display:flex;gap:12px;align-items:center">'
+      + '<div style="width:52px;height:52px;border-radius:50%;background:#e5e7eb;color:#6b7280;display:flex;align-items:center;justify-content:center;font-size:24px;flex:none">👤</div>'
+      + '<div style="flex:1"><div style="font-size:17px;font-weight:800">Sign in to TempMail</div>'
+      + '<div style="font-size:13px;color:var(--sub)">Back up your addresses and plan. Free, and takes a few seconds.</div></div>'
+      + '</div>'
+      + '<div class="row" style="margin-top:12px">'
+      + '<button class="btn-primary" onclick="openAuth(\'signin\')">Log In</button>'
+      + '<button class="btn-ghost" style="background:#dbeafe;color:#2563eb;border-color:#bfdbfe" onclick="openAuth(\'create\')">Create Account</button>'
+      + '</div></div>';
+  }
+}
+session = getSession();
+renderAuthCard();
 </script>
 </body>
 </html>
