@@ -212,7 +212,11 @@ function saveActive(a) { if (a) localStorage.setItem(LS_ACTIVE, JSON.stringify(a
 async function api(path, opts) {
   const res = await fetch(path, opts);
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || ('កំហុស ' + res.status));
+  if (!res.ok) {
+    const err = new Error(data.error || ('កំហុស ' + res.status));
+    err.status = res.status;
+    throw err;
+  }
   return data;
 }
 function cleanName(raw) { return String(raw || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
@@ -448,6 +452,14 @@ async function loadInbox(manual) {
     setStatus(true, 'រួចរាល់');
     hideErr();
   } catch (e) {
+    if (e.status === 401 && active) {
+      // token ផុតកំណត់ — បង្កើតអាសយដ្ឋានថ្មីដោយស្វ័យប្រវត្តិ
+      saveActive(null);
+      active = null;
+      toast('អាសយដ្ឋានចាស់ផុតកំណត់ — កំពុងបង្កើតថ្មី…');
+      createAddressAuto();
+      return;
+    }
     setStatus(false, 'មានបញ្ហា');
     if (manual) showErr('ឆែកសំបុត្រមិនបាន៖ ' + e.message);
   }
