@@ -833,7 +833,7 @@ function requestGenerate(kind, username) {
   if (q.freeLeft > 0) {
     showInterstitialAd(() => {
       const q2 = getQuota();
-      if (q2.freeLeft > 0) { q2.freeLeft--; saveQuota(q2); renderQuota(); }
+      if (q2.freeLeft > 0) { q2.freeLeft--; saveQuota(q2); renderQuota(); renderBannerAd(); }
       doGenerate(kind, username);
     });
     return;
@@ -873,7 +873,7 @@ function watchAdForGmail() {
     const q = getQuota();
     q.freeLeft = (q.freeLeft || 0) + 1;
     q.adToday = (q.adToday || 0) + 1;
-    saveQuota(q); renderQuota();
+    saveQuota(q); renderQuota(); renderBannerAd();
     toast('បាន 1 Gmail ហ្វ្រីពីការមើល Ad ✓');
     if (pendingGen) { const p = pendingGen; pendingGen = null; doGenerate(p.kind, p.username); }
   });
@@ -898,6 +898,7 @@ function goPage(p) {
     $('page-' + x).classList.toggle('active', x === p);
     $('nav-' + x).classList.toggle('on', x === p);
   });
+  if (p === 'home') { renderBannerAd(); renderQuota(); }
   if (p === 'inbox') { renderInbox(); loadInbox(false); }
   if (p === 'history') { renderListTab(); }
   if (p === 'settings') renderSettingsInfo();
@@ -1412,6 +1413,7 @@ function setSession(s, remember) {
     localStorage.removeItem(LS_SESSION); sessionStorage.removeItem(LS_SESSION);
   }
   renderAuthCard();
+  if (typeof renderBannerAd === 'function') { renderBannerAd(); renderQuota(); }
 }
 function bufToHex(buf) { return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join(''); }
 async function hashPw(salt, pw) {
