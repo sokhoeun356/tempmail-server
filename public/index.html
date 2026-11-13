@@ -745,6 +745,7 @@ function initCountries() {
 
 // ---- ads + quota (Google AdSense + free Gmail quota) ----------------------
 const LS_ADSENSE = 'tempmail_adsense_client';
+const DEFAULT_ADSENSE = 'ca-pub-4579918003268861';
 const LS_QUOTA = 'tempmail_quota_v1';
 const FREE_PER_CYCLE = 5, CYCLE_DAYS = 7, AD_REWARD_MAX_DAY = 6, AD_WAIT_SEC = 5;
 let adTimer = null, adOnDone = null;
@@ -757,7 +758,7 @@ function accountKey() {
 }
 function isAdmin() { return accountKey() === 'sokhoeun356@gmail.com'; }
 function isPremium() { return isAdmin() || localStorage.getItem('tempmail_premium') === '1'; }
-function getAdsenseClient() { return (localStorage.getItem(LS_ADSENSE) || '').trim(); }
+function getAdsenseClient() { return (localStorage.getItem(LS_ADSENSE) || DEFAULT_ADSENSE || '').trim(); }
 function todayStr() { return new Date().toISOString().slice(0, 10); }
 function loadQuotas() { try { return JSON.parse(localStorage.getItem(LS_QUOTA) || '{}'); } catch (e) { return {}; } }
 function saveQuotas(q) { localStorage.setItem(LS_QUOTA, JSON.stringify(q)); }
