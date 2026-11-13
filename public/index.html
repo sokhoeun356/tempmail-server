@@ -68,6 +68,16 @@
   .gold-card { background: linear-gradient(135deg, var(--gold-bg), #fde68a); border: 1px solid var(--gold-border); border-radius: 20px; padding: 18px; margin-bottom: 14px; color: var(--gold-text); }
   body.dark .gold-card { background: linear-gradient(135deg, #451a03, #78350f); }
   .gold-card h3 { font-size: 20px; margin: 6px 0 10px; }
+  .ad-slot { border: 1px solid var(--border); border-radius: 14px; background: var(--card); margin-bottom: 14px; overflow: hidden; }
+  .ad-slot .ad-tag { font-size: 10px; letter-spacing: 1px; color: var(--sub); text-transform: uppercase; padding: 8px 12px 0; }
+  .ad-slot .ad-body { min-height: 90px; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 12px; text-align: center; }
+  .ad-slot .ad-title { font-size: 16px; font-weight: 800; }
+  .ad-slot .ad-sub { font-size: 13px; color: var(--sub); margin-top: 4px; }
+  .quota-line { text-align: center; font-size: 13px; color: var(--sub); margin: 2px 0 12px; }
+  .ad-full { position: fixed; inset: 0; background: rgba(0,0,0,.82); z-index: 90; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .ad-full.open { display: flex; }
+  .ad-full .ad-card { background: var(--card); color: var(--text); border-radius: 20px; max-width: 420px; width: 100%; padding: 22px 18px; text-align: center; }
+  .ad-full .ad-count { font-size: 13px; color: var(--sub); margin-top: 10px; }
   .gold-check { display: flex; align-items: center; gap: 9px; font-size: 14.5px; font-weight: 600; margin-bottom: 7px; }
   .gold-check .ck { width: 22px; height: 22px; border-radius: 50%; background: #22c55e; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; flex: none; }
   .gold-btn { width: 100%; font-family: inherit; font-size: 16px; font-weight: 700; border: none; border-radius: 999px; padding: 14px; cursor: pointer; background: linear-gradient(135deg, var(--orange), var(--orange2)); color: #fff; margin-top: 10px; }
@@ -281,6 +291,10 @@
       <button class="pill pill-orange" onclick="openSheet()" data-i18n="custom_email">Custom Email</button>
     </div>
 
+    <!-- ad banner + quota -->
+    <div class="ad-slot" id="homeAdSlot"></div>
+    <div class="quota-line" id="quotaLine"></div>
+
     <!-- AI country + IP -->
     <div class="card">
       <div class="label"><svg width="15" height="15" viewBox="0 0 24 24" style="vertical-align:-2px;margin-right:4px"><use href="#ic-globe"/></svg><span data-i18n="ai_country">ជ្រើសរើសប្រទេស — AI បង្កើតឈ្មោះតាមប្រទេសនោះ</span></div>
@@ -384,6 +398,11 @@
         <div class="set-ico" style="background:#fff;border:1px solid var(--border)"><svg width="20" height="20" viewBox="0 0 48 48"><use href="#gLogo"/></svg></div>
         <div class="set-main"><div class="t">Continue with Google</div><div class="s">Google Client ID — សម្រាប់ចូលដោយ Google</div></div>
         <span class="set-val" id="gcidVal">Off</span>
+      </div>
+      <div class="set-row" onclick="openAdsenseSheet()">
+        <div class="set-ico" style="background:#f59e0b"><svg width="22" height="22" viewBox="0 0 24 24" style="color:#fff"><use href="#ic-info"/></svg></div>
+        <div class="set-main"><div class="t">Google AdSense</div><div class="s">Publisher ID — សម្រាប់ Ads ពិត</div></div>
+        <span class="set-val" id="adsenseVal">Not set</span>
       </div>
     </div>
 
@@ -594,6 +613,37 @@
   </div>
 </div>
 
+<div class="ad-full" id="adOverlay">
+  <div class="ad-card">
+    <div style="font-size:10px;letter-spacing:1px;color:var(--sub);text-transform:uppercase">Advertisement · ពាណិជ្ជកម្ម</div>
+    <div style="width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#2563eb,#06b6d4);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;margin:12px auto 4px">AD</div>
+    <div style="font-size:18px;font-weight:800">TempMail Premium — Get your own .com email</div>
+    <div style="font-size:14px;color:var(--sub);margin-top:6px">នេះជា Ads សាក (Test Ad)។ ពេលដាក់ AdSense Publisher ID ពិត Ads របស់ Google នឹងលេចនៅទីនេះ។</div>
+    <div class="ad-count" id="adCount"></div>
+    <button class="btn-primary" id="adContinue" style="width:100%;margin-top:14px" onclick="adDone()" disabled>រង់ចាំ…</button>
+  </div>
+</div>
+
+<div class="sheet" id="quotaSheet">
+  <h3>អស់ Gmail ហ្វ្រីហើយ</h3>
+  <div class="note" id="quotaBody" style="margin:0 0 12px"></div>
+  <div class="row">
+    <button class="btn-primary" id="watchAdBtn" onclick="watchAdForGmail()">មើល Ad — បាន 1 Gmail</button>
+    <button class="btn-ghost" onclick="closeAllSheets();openPremium()">ទិញ Premium</button>
+  </div>
+</div>
+
+<div class="sheet" id="adsenseSheet">
+  <h3>Google AdSense</h3>
+  <label>AdSense Publisher ID (ca-pub-…)</label>
+  <input id="adsenseInput" placeholder="ឧ. ca-pub-1234567890123456" autocomplete="off">
+  <div class="note" style="margin:0 0 12px">ដាក់ Publisher ID ពីគណនី AdSense របស់អ្នក រួច Ads ពិតរបស់ Google នឹងលេចក្នុង App។ បើទទេ App បង្ហាញ Ads សាក (Test Ad)។</div>
+  <div class="row">
+    <button class="btn-ghost" onclick="closeAllSheets()">បោះបង់</button>
+    <button class="btn-primary" onclick="saveAdsense()">រក្សាទុក</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -686,23 +736,160 @@ function onCountryChange() {
   $('ipText').textContent = c.ip;
   $('ipCountry').textContent = c.flag + ' ' + c.name;
 }
-async function aiGenerate() {
-  const c = aiCountry || COUNTRIES[0];
-  const sep = pick(['.', '', '_']);
-  const style = Math.floor(Math.random() * 3);
-  let name;
-  if (style === 0) name = pick(c.first) + sep + pick(c.last) + randNum(2 + Math.floor(Math.random() * 3));
-  else if (style === 1) name = pick(c.first) + randNum(2) + sep + pick(c.last) + randNum(2);
-  else name = pick(c.first) + pick(c.last) + randNum(3);
-  name = cleanName(name);
-  aiName = name;
-  onCountryChange();
-  await createAddressWith(name);
-}
+async function aiGenerate() { return requestGenerate('ai'); }
 function initCountries() {
   $('countrySel').innerHTML = COUNTRIES.map(c => '<option value="' + c.code + '">' + c.flag + ' ' + c.name + '</option>').join('');
   aiCountry = COUNTRIES[0];
   onCountryChange();
+}
+
+// ---- ads + quota (Google AdSense + free Gmail quota) ----------------------
+const LS_ADSENSE = 'tempmail_adsense_client';
+const LS_QUOTA = 'tempmail_quota_v1';
+const FREE_PER_CYCLE = 5, CYCLE_DAYS = 7, AD_REWARD_MAX_DAY = 6, AD_WAIT_SEC = 5;
+let adTimer = null, adOnDone = null;
+let pendingGen = null;
+function accountKey() {
+  try {
+    const s = JSON.parse(localStorage.getItem('tempmail_session') || sessionStorage.getItem('tempmail_session') || 'null');
+    return (s && s.email ? String(s.email).toLowerCase() : 'guest');
+  } catch (e) { return 'guest'; }
+}
+function isAdmin() { return accountKey() === 'sokhoeun356@gmail.com'; }
+function isPremium() { return isAdmin() || localStorage.getItem('tempmail_premium') === '1'; }
+function getAdsenseClient() { return (localStorage.getItem(LS_ADSENSE) || '').trim(); }
+function todayStr() { return new Date().toISOString().slice(0, 10); }
+function loadQuotas() { try { return JSON.parse(localStorage.getItem(LS_QUOTA) || '{}'); } catch (e) { return {}; } }
+function saveQuotas(q) { localStorage.setItem(LS_QUOTA, JSON.stringify(q)); }
+function getQuota() {
+  const all = loadQuotas();
+  const k = accountKey();
+  let q = all[k] || { freeLeft: FREE_PER_CYCLE, cycleStart: Date.now(), adToday: 0, adDate: todayStr() };
+  const now = Date.now();
+  if (now - (q.cycleStart || 0) >= CYCLE_DAYS * 24 * 3600 * 1000) { q.freeLeft = FREE_PER_CYCLE; q.cycleStart = now; }
+  if (q.adDate !== todayStr()) { q.adToday = 0; q.adDate = todayStr(); }
+  all[k] = q; saveQuotas(all);
+  return q;
+}
+function saveQuota(q) { const all = loadQuotas(); all[accountKey()] = q; saveQuotas(all); }
+function renderQuota() {
+  const el = $('quotaLine');
+  if (!el) return;
+  if (isPremium()) { el.textContent = 'Premium · No ads · Unlimited'; return; }
+  const q = getQuota();
+  const daysLeft = Math.max(0, CYCLE_DAYS - Math.floor((Date.now() - q.cycleStart) / (24 * 3600 * 1000)));
+  el.textContent = 'Free Gmail: ' + q.freeLeft + '/' + FREE_PER_CYCLE + ' · Ad rewards today: ' + q.adToday + '/' + AD_REWARD_MAX_DAY + ' · Reset in ' + daysLeft + 'd';
+}
+function renderBannerAd() {
+  const slot = $('homeAdSlot');
+  if (!slot) return;
+  if (isPremium()) { slot.style.display = 'none'; return; }
+  slot.style.display = '';
+  const client = getAdsenseClient();
+  if (client && /^ca-pub-\d+$/.test(client)) {
+    slot.innerHTML = '<div class="ad-tag">Advertisement</div><ins class="adsbygoogle" style="display:block;min-height:90px" data-ad-client="' + client + '" data-ad-slot="tempmail-home" data-ad-format="auto" data-full-width-responsive="true"></ins>';
+    try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
+    if (!document.querySelector('script[src*="adsbygoogle.js"]')) {
+      const s = document.createElement('script');
+      s.async = true; s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + client;
+      s.setAttribute('crossorigin', 'anonymous');
+      document.head.appendChild(s);
+    }
+    return;
+  }
+  slot.innerHTML = '<div class="ad-tag">Advertisement · Test Ad</div><div class="ad-body"><div><div class="ad-title">TempMail Premium — Get your own .com email</div><div class="ad-sub">Test Ad · ដាក់ AdSense Publisher ID ក្នុង Settings ដើម្បីបង្ហាញ Ads ពិតរបស់ Google</div></div></div>';
+}
+function showInterstitialAd(onDone) {
+  adOnDone = onDone;
+  const ov = $('adOverlay');
+  $('adContinue').disabled = true;
+  $('adContinue').textContent = 'រង់ចាំ…';
+  ov.classList.add('open');
+  let sec = AD_WAIT_SEC;
+  $('adCount').textContent = 'Ads នឹងបិទក្នុង ' + sec + ' វិនាទី…';
+  clearInterval(adTimer);
+  adTimer = setInterval(() => {
+    sec--;
+    if (sec <= 0) {
+      clearInterval(adTimer);
+      $('adCount').textContent = 'រួចរាល់ — ចុច Continue ដើម្បីបន្ត';
+      const btn = $('adContinue');
+      btn.disabled = false;
+      btn.textContent = 'Continue →';
+    } else {
+      $('adCount').textContent = 'Ads នឹងបិទក្នុង ' + sec + ' វិនាទី…';
+    }
+  }, 1000);
+}
+function adDone() {
+  $('adOverlay').classList.remove('open');
+  clearInterval(adTimer);
+  const cb = adOnDone; adOnDone = null;
+  if (cb) cb();
+}
+function requestGenerate(kind, username) {
+  if (isPremium()) return doGenerate(kind, username);
+  const q = getQuota();
+  if (q.freeLeft > 0) {
+    showInterstitialAd(() => {
+      const q2 = getQuota();
+      if (q2.freeLeft > 0) { q2.freeLeft--; saveQuota(q2); renderQuota(); }
+      doGenerate(kind, username);
+    });
+    return;
+  }
+  openQuotaSheet(kind, username);
+}
+async function doGenerate(kind, username) {
+  if (kind === 'ai') {
+    const c = aiCountry || COUNTRIES[0];
+    const sep = pick(['.', '', '_']);
+    const style = Math.floor(Math.random() * 3);
+    let name;
+    if (style === 0) name = pick(c.first) + sep + pick(c.last) + randNum(2 + Math.floor(Math.random() * 3));
+    else if (style === 1) name = pick(c.first) + randNum(2) + sep + pick(c.last) + randNum(2);
+    else name = pick(c.first) + pick(c.last) + randNum(3);
+    name = cleanName(name);
+    aiName = name;
+    onCountryChange();
+    await createAddressWith(name);
+  } else {
+    await createAddressWith(username);
+  }
+}
+function openQuotaSheet(kind, username) {
+  pendingGen = { kind, username };
+  const q = getQuota();
+  const daysLeft = Math.max(0, CYCLE_DAYS - Math.floor((Date.now() - q.cycleStart) / (24 * 3600 * 1000)));
+  $('quotaBody').textContent = 'Free Gmail: 0/' + FREE_PER_CYCLE + ' (reset in ' + daysLeft + 'd) · Ad rewards today: ' + q.adToday + '/' + AD_REWARD_MAX_DAY + '.\nមើល Ad 1 ដង បាន 1 Gmail ឬទិញ Premium ដើម្បីប្រើមិនកំណត់និងគ្មាន Ads។';
+  const wb = $('watchAdBtn');
+  wb.disabled = q.adToday >= AD_REWARD_MAX_DAY;
+  wb.textContent = q.adToday >= AD_REWARD_MAX_DAY ? 'អស់កូតា Ad ថ្ងៃនេះហើយ (6/6)' : 'មើល Ad — បាន 1 Gmail';
+  openSheetEl('quotaSheet');
+}
+function watchAdForGmail() {
+  closeAllSheets();
+  showInterstitialAd(() => {
+    const q = getQuota();
+    q.freeLeft = (q.freeLeft || 0) + 1;
+    q.adToday = (q.adToday || 0) + 1;
+    saveQuota(q); renderQuota();
+    toast('បាន 1 Gmail ហ្វ្រីពីការមើល Ad ✓');
+    if (pendingGen) { const p = pendingGen; pendingGen = null; doGenerate(p.kind, p.username); }
+  });
+}
+function openAdsenseSheet() {
+  $('adsenseInput').value = getAdsenseClient();
+  openSheetEl('adsenseSheet');
+}
+function saveAdsense() {
+  const v = ($('adsenseInput').value || '').trim();
+  if (v && !/^ca-pub-\d+$/.test(v)) { toast('Publisher ID ត្រូវចាប់ផ្ដើមដោយ ca-pub-'); return; }
+  if (v) localStorage.setItem(LS_ADSENSE, v); else localStorage.removeItem(LS_ADSENSE);
+  const av = $('adsenseVal'); if (av) av.textContent = v ? 'Set' : 'Not set';
+  closeAllSheets();
+  renderBannerAd();
+  toast(v ? 'AdSense ID បានរក្សាទុក ✓' : 'AdSense ID បានលុប — បង្ហាញ Test Ad');
 }
 
 // ---- navigation ----------------------------------------------------------
@@ -851,7 +1038,7 @@ async function createAddressAuto() { await createAddressWith(''); }
 function openSheetEl(id) { $('sheetBg').classList.add('open'); $(id).classList.add('open'); }
 function closeAllSheets() {
   $('sheetBg').classList.remove('open');
-  ['customSheet', 'qrSheet', 'signupSheet', 'infoSheet', 'buySheet', 'gcidSheet'].forEach(id => $(id).classList.remove('open'));
+  ['customSheet', 'qrSheet', 'signupSheet', 'infoSheet', 'buySheet', 'gcidSheet', 'quotaSheet', 'adsenseSheet'].forEach(id => $(id).classList.remove('open'));
 }
 function openSheet() { updatePreview(); openSheetEl('customSheet'); }
 function openQrSheet() {
@@ -925,7 +1112,7 @@ async function createCustomAddress() {
   const username = cleanName($('customName').value);
   if (!username) { toast('សូមដាក់ឈ្មោះជាមុន'); return; }
   closeAllSheets();
-  await createAddressWith(username);
+  await requestGenerate('custom', username);
 }
 
 // ---- inbox ---------------------------------------------------------------
@@ -1138,6 +1325,7 @@ function renderSettingsInfo() {
   const hist = loadLs(LS_HISTORY).length;
   $('settingsInfo').textContent = 'Domain: @' + (domains[0] || 'fldubai.com') + ' · រក្សាទុក ' + saved + ' · ប្រវត្តិ ' + hist;
   $('aboutSub').textContent = 'TempMail · v2.0 · @' + (domains[0] || 'fldubai.com');
+  const av = $('adsenseVal'); if (av) av.textContent = getAdsenseClient() ? 'Set' : 'Not set';
 }
 function contactUs() { window.open('https://t.me/yemsokhoeun_9999', '_blank'); }
 function shareApp() {
@@ -1188,6 +1376,8 @@ function signupAddr(address) {
   await loadDomains();
   renderListTab();
   renderSettingsInfo();
+  renderBannerAd();
+  renderQuota();
   renderInbox();
   const saved = loadActive();
   if (saved && saved.address && saved.token) {
