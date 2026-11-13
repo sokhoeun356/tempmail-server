@@ -53,6 +53,32 @@ async function mailtm(pathname, options) {
   return { status: res.status, ok: res.ok, data, text };
 }
 
+// ---- admin storage (purchase requests + users) ---------------------------
+// Stored as JSON files under ./data (NOT committed to git — see .gitignore).
+// NOTE: Render's free-tier disk is ephemeral, so this data can be lost when
+// the service restarts or redeploys. It is the best free option available.
+const fs = require('fs');
+const ADMIN_EMAIL = 'sokhoeun356@gmail.com';
+const DATA_DIR = path.join(__dirname, 'data');
+try { fs.mkdirSync(DATA_DIR, { recursive: true }); } catch (_) {}
+function readJson(name, fallback) {
+  try {
+    const v = JSON.parse(fs.readFileSync(path.join(DATA_DIR, name), 'utf8'));
+    return (v === null || v === undefined) ? fallback : v;
+  } catch (_) { return fallback; }
+}
+function writeJson(name, data) {
+  try { fs.writeFileSync(path.join(DATA_DIR, name), JSON.stringify(data, null, 2)); return true; }
+  catch (_) { return false; }
+}
+function newId(prefix) {
+  return prefix + '_' + Date.now().toString(36) + crypto.randomBytes(4).toString('hex');
+}
+function isAdminReq(req) {
+  const a = String(((req.query && req.query.admin) || (req.body && req.body.admin) || '')).trim().toLowerCase();
+  return a !== '' && a === ADMIN_EMAIL;
+}
+
 function bearerToken(req) {
   const h = req.headers.authorization || '';
   const m = h.match(/^Bearer\s+(.+)$/i);
@@ -179,6 +205,88 @@ app.delete('/api/address/:id', async (req, res) => {
   } catch (e) {
     res.status(502).json({ error: 'មិនអាចភ្ជាប់ទៅ mail.tm បានទេ' });
   }
+});
+
+// ---- Admin: purchase requests + users ------------------------------------
+
+// POST /api/purchase-request { plan, price, tempEmail, userEmail, userName }
+// A buyer sends a Premium purchase request straight to the admin (no email).
+app.post('/api/purchase-request', (req, res) => {
+  const plan = String(req.body.plan || 'Premium').slice(0, 80);
+  const price = String(req.body.price || '').slice(0, 30);
+  const tempEmail = String(req.body.tempEmail || '').slice(0, 120);
+  const userEmail = String(req.body.userEmail || '').trim().toLowerCase().slice(0, 120);
+  const userName = String(req.body.userName || '').slice(0, 80);
+  if (!tempEmail && !userEmail) return res.status(400).json({ error: 'ខ្វះព័ត៌មាន' });
+  const reqs = readJson('requests.json', []);
+  const r = { id: newId('req'), plan, price, tempEmail, userEmail, userName, status: 'pending', date: new Date().toISOString() };
+  reqs.push(r);
+  writeJson('requests.json', reqs);
+  res.json({ ok: true, id: r.id });
+});
+
+// GET /api/admin/requests?admin=<admin email> — newest first
+app.get('/api/admin/requests', (req, res) => {
+  if (!isAdminReq(req)) return res.status(403).json({ error: 'Admin only' });
+  const reqs = readJson('requests.json', []);
+  res.json({ requests: reqs.slice().reverse() });
+});
+
+// POST /api/admin/requests/:id/status { admin, status } — approve / reject.
+// Approving also activates Premium for that buyer's email.
+app.post('/api/admin/requests/:id/status', (req, res) => {
+  if (!isAdminReq(req)) return res.status(403).json({ error: 'Admin only' });
+  const status = String(req.body.status || '');
+  if (status !== 'approved' && status !== 'rejected') return res.status(400).json({ error: 'status មិនត្រឹមត្រូវ' });
+  const reqs = readJson('requests.json', []);
+  const r = reqs.find(x => x.id === req.params.id);
+  if (!r) return res.status(404).json({ error: 'រកសំណើរមិនឃើញ' });
+  r.status = status;
+  writeJson('requests.json', reqs);
+  if (status === 'approved' && r.userEmail) {
+    if (/remove ads/i.test(r.plan || '')) {
+      const days = /7\s*days/i.test(r.plan) ? 7 : 30;
+      const adfree = readJson('adfree.json', {});
+      adfree[r.userEmail] = new Date(Date.now() + days * 24 * 3600 * 1000).toISOString();
+      writeJson('adfree.json', adfree);
+    } else {
+      const prem = readJson('premium.json', []);
+      if (!prem.includes(r.userEmail)) { prem.push(r.userEmail); writeJson('premium.json', prem); }
+    }
+  }
+  res.json({ ok: true });
+});
+
+// POST /api/register-user { name, email, provider } — record a user (upsert)
+app.post('/api/register-user', (req, res) => {
+  const email = String(req.body.email || '').trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ error: 'អ៊ីមែលមិនត្រឹមត្រូវ' });
+  const name = String(req.body.name || '').slice(0, 80);
+  const provider = String(req.body.provider || 'local').slice(0, 20);
+  const users = readJson('users.json', []);
+  const ex = users.find(u => u.email === email);
+  if (ex) { ex.name = name || ex.name; ex.provider = provider; ex.lastSeen = new Date().toISOString(); }
+  else users.push({ name, email, provider, created: new Date().toISOString(), lastSeen: new Date().toISOString() });
+  writeJson('users.json', users);
+  res.json({ ok: true });
+});
+
+// GET /api/admin/users?admin=<admin email> — all users, newest first
+app.get('/api/admin/users', (req, res) => {
+  if (!isAdminReq(req)) return res.status(403).json({ error: 'Admin only' });
+  const users = readJson('users.json', []);
+  res.json({ users: users.slice().reverse() });
+});
+
+// GET /api/premium?email=... — is this email Premium (admin-approved)?
+app.get('/api/premium', (req, res) => {
+  const email = String(req.query.email || '').trim().toLowerCase();
+  if (email === ADMIN_EMAIL) return res.json({ premium: true, adFree: true, adFreeUntil: null });
+  const prem = readJson('premium.json', []);
+  const adfree = readJson('adfree.json', {});
+  const until = adfree[email] || null;
+  const adFree = !!until && new Date(until).getTime() > Date.now();
+  res.json({ premium: prem.includes(email), adFree, adFreeUntil: adFree ? until : null });
 });
 
 // Health check

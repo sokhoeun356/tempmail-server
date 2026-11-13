@@ -420,10 +420,14 @@
       </div>
     </div>
     <div class="sec-label">Admin</div>
-    <div class="card" style="padding:14px 16px">
+    <div class="card" style="padding:14px 16px" id="adminCard">
       <div style="font-size:13px;color:var(--sub)">Purchase requests go to the admin</div>
       <div style="font-size:16px;font-weight:800;margin-top:2px">sokhoeun356@gmail.com</div>
       <div style="font-size:13px;color:var(--sub);margin-top:4px">Telegram: @yemsokhoeun_9999</div>
+      <div id="adminOpenWrap" style="display:none;margin-top:12px">
+        <button class="btn-primary" onclick="openAdmin()">Open Admin Dashboard</button>
+        <div style="font-size:13px;color:var(--sub);margin-top:8px" id="adminCounts"></div>
+      </div>
     </div>
     <div style="text-align:center;padding:14px 0 4px"><span class="status"><span class="dot" id="statusDot"></span><span id="statusText">រួចរាល់</span></span></div>
   </div>
@@ -581,6 +585,20 @@
       </div>
     </div>
     <button class="gold-btn" style="margin-top:16px;display:flex;align-items:center;justify-content:center;gap:10px" onclick="buyPremium()"><svg width="20" height="20" viewBox="0 0 24 24" style="color:#fff"><use href="#ic-crown"/></svg> Get Premium</button>
+    <div class="sec-label" style="margin-top:22px">Remove Ads only</div>
+    <div class="note" style="margin:0 0 10px">បិទ Ads (Banner + Pop-up) តែមិនទិញ Premium — មិនបាន .com email និងមិនបាន Gmail មិនកំណត់ទេ។</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="plan" onclick="buyRemoveAds('adfree7')">
+        <div class="radio"><svg viewBox="0 0 24 24"><use href="#ic-check"/></svg></div>
+        <div><div class="nm">Remove Ads — 7 Days</div><div class="sub">No ads for 7 days</div></div>
+        <div class="pr">$0.99</div>
+      </div>
+      <div class="plan" onclick="buyRemoveAds('adfree30')">
+        <div class="radio"><svg viewBox="0 0 24 24"><use href="#ic-check"/></svg></div>
+        <div><div class="nm">Remove Ads — 1 Month</div><div class="sub">No ads for 30 days</div></div>
+        <div class="pr">$1.99</div>
+      </div>
+    </div>
     <div style="text-align:center;margin-top:14px;font-size:13px;color:#2563eb">
       <span onclick="restorePurchases()" style="cursor:pointer">Restore Purchases</span> · <span onclick="openInfoSheet('terms')" style="cursor:pointer">Terms of Use</span> · <span onclick="openInfoSheet('privacy')" style="cursor:pointer">Privacy Policy</span>
     </div>
@@ -597,8 +615,22 @@
   <h3 id="buyTitle">Buy Premium</h3>
   <div class="note" id="buyBody" style="margin:0 0 12px;white-space:pre-line"></div>
   <div class="row">
-    <button class="btn-primary" onclick="sendBuyEmail()"><svg width="16" height="16" viewBox="0 0 24 24" style="vertical-align:-3px;margin-right:6px"><use href="#ic-mail"/></svg>Send by Email</button>
+    <button class="btn-primary" onclick="sendBuyRequest()"><svg width="16" height="16" viewBox="0 0 24 24" style="vertical-align:-3px;margin-right:6px"><use href="#ic-mail"/></svg>Send Request to Admin</button>
     <button class="btn-ghost" onclick="contactAdminTelegram()"><svg width="16" height="16" viewBox="0 0 24 24" style="vertical-align:-3px;margin-right:6px"><use href="#ic-chat"/></svg>Telegram</button>
+  </div>
+</div>
+
+<div id="adminPage" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:60;overflow-y:auto">
+  <div style="max-width:640px;margin:0 auto;padding:16px">
+    <div style="display:flex;align-items:center;gap:10px;margin:8px 0 14px">
+      <button class="btn-ghost" onclick="closeAdmin()" style="padding:8px 12px">‹ Back</button>
+      <div style="font-size:20px;font-weight:800">Admin Dashboard</div>
+    </div>
+    <div class="sec-label">Purchase Requests</div>
+    <div id="adminRequests"><div class="note">កំពុងផ្ទុក…</div></div>
+    <div class="sec-label" style="margin-top:18px">All Users</div>
+    <div id="adminUsers"><div class="note">កំពុងផ្ទុក…</div></div>
+    <div style="height:30px"></div>
   </div>
 </div>
 
@@ -758,6 +790,8 @@ function accountKey() {
 }
 function isAdmin() { return accountKey() === 'sokhoeun356@gmail.com'; }
 function isPremium() { return isAdmin() || localStorage.getItem('tempmail_premium') === '1'; }
+function isAdFree() { const u = localStorage.getItem('tempmail_adfree_until'); return !!u && new Date(u).getTime() > Date.now(); }
+function noAds() { return isPremium() || isAdFree(); }
 function getAdsenseClient() { return (localStorage.getItem(LS_ADSENSE) || DEFAULT_ADSENSE || '').trim(); }
 function todayStr() { return new Date().toISOString().slice(0, 10); }
 function loadQuotas() { try { return JSON.parse(localStorage.getItem(LS_QUOTA) || '{}'); } catch (e) { return {}; } }
@@ -779,12 +813,13 @@ function renderQuota() {
   if (isPremium()) { el.textContent = 'Premium · No ads · Unlimited'; return; }
   const q = getQuota();
   const daysLeft = Math.max(0, CYCLE_DAYS - Math.floor((Date.now() - q.cycleStart) / (24 * 3600 * 1000)));
-  el.textContent = 'Free Gmail: ' + q.freeLeft + '/' + FREE_PER_CYCLE + ' · Ad rewards today: ' + q.adToday + '/' + AD_REWARD_MAX_DAY + ' · Reset in ' + daysLeft + 'd';
+  if (isAdFree()) el.textContent = 'Ad-free until ' + (localStorage.getItem('tempmail_adfree_until') || '').slice(0, 10) + ' · Free Gmail: ' + q.freeLeft + '/' + FREE_PER_CYCLE + ' · Reset in ' + daysLeft + 'd';
+  else el.textContent = 'Free Gmail: ' + q.freeLeft + '/' + FREE_PER_CYCLE + ' · Ad rewards today: ' + q.adToday + '/' + AD_REWARD_MAX_DAY + ' · Reset in ' + daysLeft + 'd';
 }
 function renderBannerAd() {
   const slot = $('homeAdSlot');
   if (!slot) return;
-  if (isPremium()) { slot.style.display = 'none'; return; }
+  if (noAds()) { slot.style.display = 'none'; return; }
   slot.style.display = '';
   const client = getAdsenseClient();
   if (client && /^ca-pub-\d+$/.test(client)) {
@@ -832,6 +867,7 @@ function requestGenerate(kind, username) {
   if (isPremium()) return doGenerate(kind, username);
   const q = getQuota();
   if (q.freeLeft > 0) {
+    if (noAds()) { q.freeLeft--; saveQuota(q); renderQuota(); renderBannerAd(); return doGenerate(kind, username); }
     showInterstitialAd(() => {
       const q2 = getQuota();
       if (q2.freeLeft > 0) { q2.freeLeft--; saveQuota(q2); renderQuota(); renderBannerAd(); }
@@ -862,8 +898,11 @@ function openQuotaSheet(kind, username) {
   pendingGen = { kind, username };
   const q = getQuota();
   const daysLeft = Math.max(0, CYCLE_DAYS - Math.floor((Date.now() - q.cycleStart) / (24 * 3600 * 1000)));
-  $('quotaBody').textContent = 'Free Gmail: 0/' + FREE_PER_CYCLE + ' (reset in ' + daysLeft + 'd) · Ad rewards today: ' + q.adToday + '/' + AD_REWARD_MAX_DAY + '.\nមើល Ad 1 ដង បាន 1 Gmail ឬទិញ Premium ដើម្បីប្រើមិនកំណត់និងគ្មាន Ads។';
+  $('quotaBody').textContent = isAdFree()
+    ? 'Free Gmail: 0/' + FREE_PER_CYCLE + ' (reset in ' + daysLeft + 'd).\nអ្នកបានបិទ Ads ហើយ — ទិញ Premium ដើម្បីប្រើ Gmail មិនកំណត់។'
+    : 'Free Gmail: 0/' + FREE_PER_CYCLE + ' (reset in ' + daysLeft + 'd) · Ad rewards today: ' + q.adToday + '/' + AD_REWARD_MAX_DAY + '.\nមើល Ad 1 ដង បាន 1 Gmail ឬទិញ Premium ដើម្បីប្រើមិនកំណត់និងគ្មាន Ads។';
   const wb = $('watchAdBtn');
+  wb.style.display = isAdFree() ? 'none' : '';
   wb.disabled = q.adToday >= AD_REWARD_MAX_DAY;
   wb.textContent = q.adToday >= AD_REWARD_MAX_DAY ? 'អស់កូតា Ad ថ្ងៃនេះហើយ (6/6)' : 'មើល Ad — បាន 1 Gmail';
   openSheetEl('quotaSheet');
@@ -1065,25 +1104,100 @@ const ADMIN_EMAIL = 'sokhoeun356@gmail.com';
 const ADMIN_TELEGRAM = 'yemsokhoeun_9999';
 const PLAN_NAMES = { monthly: 'Monthly — $0.30', '3months': '3 Months — $6.99', '6months': '6 Months — $11.99', yearly: 'Yearly — $19.99' };
 function buyPremium() {
+  selectedRemoveAds = null;
   const plan = PLAN_NAMES[selectedPlan] || 'Premium';
   const addr = active ? active.address : '(no address yet)';
   $('buyTitle').textContent = 'Buy ' + plan;
-  $('buyBody').textContent = 'Plan: ' + plan + '\nTempMail: ' + addr + '\n\nAdmin (' + ADMIN_EMAIL + ') will reply with payment details and activate your Premium.';
+  $('buyBody').textContent = 'Plan: ' + plan + '\nTempMail: ' + addr + '\n\nTap \u201cSend Request to Admin\u201d — your request goes straight to the admin, who will reply with payment details and activate your Premium.';
   openSheetEl('buySheet');
 }
-function sendBuyEmail() {
-  const plan = PLAN_NAMES[selectedPlan] || 'Premium';
+const REMOVE_ADS_PLANS = { adfree7: 'Remove Ads — 7 Days — $0.99', adfree30: 'Remove Ads — 1 Month — $1.99' };
+let selectedRemoveAds = null;
+function buyRemoveAds(id) {
+  selectedRemoveAds = id;
+  const plan = REMOVE_ADS_PLANS[id] || 'Remove Ads';
   const addr = active ? active.address : '(no address yet)';
-  const subject = encodeURIComponent('TempMail Premium — ' + plan);
-  const body = encodeURIComponent('Hello,\n\nI want to buy TempMail Premium.\n\nPlan: ' + plan + '\nTempMail address: ' + addr + '\nDate: ' + new Date().toISOString().slice(0, 10) + '\n\nPlease send me the payment details.');
+  $('buyTitle').textContent = 'Buy ' + plan;
+  $('buyBody').textContent = 'Plan: ' + plan + '\nTempMail: ' + addr + '\n\nTap "Send Request to Admin" — your request goes straight to the admin, who will reply with payment details and activate ad-free for you.';
+  openSheetEl('buySheet');
+}
+async function sendBuyRequest() {
+  const plan = selectedRemoveAds ? (REMOVE_ADS_PLANS[selectedRemoveAds] || 'Remove Ads') : (PLAN_NAMES[selectedPlan] || 'Premium');
+  selectedRemoveAds = null;
+  const price = (plan.match(/\$[\d.]+/) || [''])[0];
+  const addr = active ? active.address : '';
+  const userEmail = session ? session.email : '';
+  const userName = session ? session.name : '';
   closeAllSheets();
-  location.href = 'mailto:' + ADMIN_EMAIL + '?subject=' + subject + '&body=' + body;
-  toast('បើកអ៊ីមែលដើម្បីផ្ញើសំណើទៅ Admin…');
+  try {
+    const r = await fetch('/api/purchase-request', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan, price, tempEmail: addr, userEmail, userName }),
+    });
+    const d = await r.json().catch(() => ({}));
+    if (r.ok && d.ok) { toast('ផ្ញើសំណើរទៅ Admin រួចហើយ ✓ Admin នឹងឆ្លើយតបឆាប់ៗ'); return; }
+    throw new Error(d.error || 'send failed');
+  } catch (e) {
+    toast('ផ្ញើសំណើរមិនបាន — សាកតាម Telegram វិញ');
+    window.open('https://t.me/' + ADMIN_TELEGRAM, '_blank');
+  }
 }
 function contactAdminTelegram() {
   closeAllSheets();
   window.open('https://t.me/' + ADMIN_TELEGRAM, '_blank');
   toast('ទាក់ទង @' + ADMIN_TELEGRAM + ' ដើម្បីទិញ Premium');
+}
+
+// ---- Admin Dashboard -----------------------------------------------------
+function openAdmin() { $('adminPage').style.display = 'block'; loadAdmin(); }
+function closeAdmin() { $('adminPage').style.display = 'none'; }
+function renderAdminCard() {
+  const w = $('adminOpenWrap');
+  if (w) w.style.display = isAdmin() ? 'block' : 'none';
+}
+async function adminFetch(path) {
+  const r = await fetch(path + (path.includes('?') ? '&' : '?') + 'admin=' + encodeURIComponent(ADMIN_EMAIL));
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(d.error || 'load failed');
+  return d;
+}
+async function loadAdmin() {
+  $('adminRequests').innerHTML = '<div class="note">កំពុងផ្ទុក…</div>';
+  $('adminUsers').innerHTML = '<div class="note">កំពុងផ្ទុក…</div>';
+  try {
+    const [rq, us] = await Promise.all([adminFetch('/api/admin/requests'), adminFetch('/api/admin/users')]);
+    renderAdminRequests(rq.requests || []);
+    renderAdminUsers(us.users || []);
+    const pend = (rq.requests || []).filter(x => x.status === 'pending').length;
+    $('adminCounts').textContent = 'Pending: ' + pend + ' · Users: ' + (us.users || []).length;
+  } catch (e) {
+    $('adminRequests').innerHTML = '<div class="note">ផ្ទុកមិនបាន — សាកម្ដងទៀត</div>';
+    $('adminUsers').innerHTML = '';
+  }
+}
+function escHtml(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+function renderAdminRequests(list) {
+  if (!list.length) { $('adminRequests').innerHTML = '<div class="note">មិនទាន់មានសំណើរទិញទេ</div>'; return; }
+  $('adminRequests').innerHTML = list.map(r => {
+    const st = r.status === 'approved' ? '✓ Approved' : r.status === 'rejected' ? '✕ Rejected' : 'Pending';
+    const btns = r.status === 'pending'
+      ? '<div class="row" style="margin-top:10px"><button class="btn-primary" onclick="setReqStatus(\'' + r.id + '\',\'approved\')">Approve</button><button class="btn-ghost" onclick="setReqStatus(\'' + r.id + '\',\'rejected\')">Reject</button></div>' : '';
+    return '<div class="card" style="margin-bottom:10px;padding:12px 14px"><div style="font-weight:800">' + escHtml(r.plan) + ' · ' + escHtml(r.price) + '</div><div style="font-size:13px;color:var(--sub);margin-top:4px">' + escHtml(r.tempEmail) + '<br>' + escHtml(r.userEmail || '(guest)') + (r.userName ? ' · ' + escHtml(r.userName) : '') + '<br>' + escHtml((r.date || '').slice(0, 10)) + ' · ' + st + '</div>' + btns + '</div>';
+  }).join('');
+}
+function renderAdminUsers(list) {
+  if (!list.length) { $('adminUsers').innerHTML = '<div class="note">មិនទាន់មានអ្នកប្រើទេ</div>'; return; }
+  $('adminUsers').innerHTML = list.map(u => '<div class="card" style="margin-bottom:10px;padding:12px 14px"><div style="font-weight:800">' + escHtml(u.name || '(no name)') + '</div><div style="font-size:13px;color:var(--sub);margin-top:4px">' + escHtml(u.email) + ' · ' + escHtml(u.provider || '') + '<br>Joined: ' + escHtml((u.created || '').slice(0, 10)) + '</div></div>').join('');
+}
+async function setReqStatus(id, status) {
+  try {
+    const r = await fetch('/api/admin/requests/' + encodeURIComponent(id) + '/status', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ admin: ADMIN_EMAIL, status }) });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.error || 'update failed');
+    toast(status === 'approved' ? 'Approved ✓ Premium activated for this buyer' : 'Rejected');
+    loadAdmin();
+  } catch (e) { toast('ធ្វើមិនបាន — សាកម្ដងទៀត'); }
 }
 function restorePurchases() { toast('មិនទាន់មានការទិញណាមួយ — Premium ទើបតែចាប់ផ្ដើម'); }
 function openInfoSheet(kind) {
@@ -1328,6 +1442,7 @@ function renderSettingsInfo() {
   $('settingsInfo').textContent = 'Domain: @' + (domains[0] || 'fldubai.com') + ' · រក្សាទុក ' + saved + ' · ប្រវត្តិ ' + hist;
   $('aboutSub').textContent = 'TempMail · v2.0 · @' + (domains[0] || 'fldubai.com');
   const av = $('adsenseVal'); if (av) av.textContent = getAdsenseClient() ? 'Set' : 'Not set';
+  renderAdminCard();
 }
 function contactUs() { window.open('https://t.me/yemsokhoeun_9999', '_blank'); }
 function shareApp() {
@@ -1405,6 +1520,21 @@ function saveUsers(u) { localStorage.setItem(LS_USERS, JSON.stringify(u)); }
 function getSession() {
   try { return JSON.parse(localStorage.getItem(LS_SESSION) || sessionStorage.getItem(LS_SESSION) || 'null'); } catch (e) { return null; }
 }
+function registerUserToServer(name, email, provider) {
+  if (!email) return;
+  fetch('/api/register-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name || '', email, provider: provider || 'local' }) }).catch(() => {});
+}
+function syncPremium(email) {
+  if (!email) return;
+  fetch('/api/premium?email=' + encodeURIComponent(email)).then(r => r.json()).then(d => {
+    if (d.premium) localStorage.setItem('tempmail_premium', '1');
+    else if (!isAdmin()) localStorage.removeItem('tempmail_premium');
+    if (d.adFree && d.adFreeUntil) localStorage.setItem('tempmail_adfree_until', d.adFreeUntil);
+    else localStorage.removeItem('tempmail_adfree_until');
+    if (typeof renderQuota === 'function') renderQuota();
+    if (typeof renderBannerAd === 'function') renderBannerAd();
+  }).catch(() => {});
+}
 function setSession(s, remember) {
   session = s;
   if (s) {
@@ -1414,6 +1544,8 @@ function setSession(s, remember) {
     localStorage.removeItem(LS_SESSION); sessionStorage.removeItem(LS_SESSION);
   }
   renderAuthCard();
+  renderAdminCard();
+  if (s && s.email) { registerUserToServer(s.name, s.email, s.provider || 'local'); syncPremium(s.email); }
   if (typeof renderBannerAd === 'function') { renderBannerAd(); renderQuota(); }
 }
 function bufToHex(buf) { return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join(''); }
@@ -1468,7 +1600,7 @@ async function doCreateAccount() {
   const hash = await hashPw(salt, pw);
   users.push({ name, email, salt, hash, created: new Date().toISOString() });
   saveUsers(users);
-  setSession({ name, email }, true);
+  setSession({ name, email, provider: 'local' }, true);
   closeAuth();
   toast('បង្កើតគណនីរួចហើយ ✓ ស្វាគមន៍ ' + name);
 }
@@ -1480,7 +1612,7 @@ async function doSignIn() {
   if (!u) return showAuthErr('រកមិនឃើញគណនីនេះទេ — សូមបង្កើតគណនីជាមុន');
   const hash = await hashPw(u.salt, pw);
   if (hash !== u.hash) return showAuthErr('ពាក្យសម្ងាត់មិនត្រឹមត្រូវទេ');
-  setSession({ name: u.name, email: u.email }, $('siRemember').checked);
+  setSession({ name: u.name, email: u.email, provider: 'local' }, $('siRemember').checked);
   closeAuth();
   toast('ចូលគណនីរួចហើយ ✓ ស្វាគមន៍ ' + u.name);
 }
@@ -1594,7 +1726,7 @@ async function doGoogleSignIn() {
           u = { name, email, salt, hash, google: true, created: new Date().toISOString() };
           users.push(u); saveUsers(users);
         }
-        setSession({ name: u.name, email: u.email }, true);
+        setSession({ name: u.name, email: u.email, provider: 'google' }, true);
         closeAuth();
         toast('ចូលដោយ Google រួចហើយ ✓ ស្វាគមន៍ ' + u.name);
       }
