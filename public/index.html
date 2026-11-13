@@ -543,62 +543,27 @@
     <div class="prem-hero" style="margin-top:10px">
       <div style="display:flex;gap:12px;align-items:center">
         <div style="width:44px;height:44px;border-radius:12px;background:#f59e0b;display:flex;align-items:center;justify-content:center;flex:none"><svg width="24" height="24" viewBox="0 0 24 24" style="color:#fff"><use href="#ic-crown"/></svg></div>
-        <div><div style="font-size:20px;font-weight:800">TempMail Premium</div>
-        <div style="font-size:13px;opacity:.8">Get your own .com email and much more.</div></div>
-      </div>
-      <div class="prem-dom">
-        <div style="display:flex;gap:10px;align-items:center"><span class="com-badge">.com</span><div style="font-weight:800;font-size:16px">Exclusive .com domains</div></div>
-        <div style="font-size:13px;opacity:.8;margin-top:4px">A short, professional address like you…</div>
+        <div><div style="font-size:20px;font-weight:800">Packages</div>
+        <div style="font-size:13px;opacity:.8">Create Gmail + No ads — choose a package.</div></div>
       </div>
       <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
-        <div style="display:flex;gap:10px;align-items:center"><div class="prem-ico" style="background:#7c3aed"><svg width="17" height="17" viewBox="0 0 24 24"><use href="#ic-at"/></svg></div><span style="font-weight:700">Create your custom email</span></div>
+        <div style="display:flex;gap:10px;align-items:center"><div class="prem-ico" style="background:#7c3aed"><svg width="17" height="17" viewBox="0 0 24 24"><use href="#ic-at"/></svg></div><span style="font-weight:700">Create Gmail — unlimited</span></div>
         <div style="display:flex;gap:10px;align-items:center"><div class="prem-ico" style="background:#ef4444"><svg width="17" height="17" viewBox="0 0 24 24"><use href="#ic-ban"/></svg></div><span style="font-weight:700">No ads at all</span></div>
-        <div style="display:flex;gap:10px;align-items:center"><div class="prem-ico" style="background:#f59e0b"><svg width="17" height="17" viewBox="0 0 24 24"><use href="#ic-inbox"/></svg></div><span style="font-weight:700">Your email never expires</span></div>
-        <div style="display:flex;gap:10px;align-items:center"><div class="prem-ico" style="background:#0ea5e9"><svg width="17" height="17" viewBox="0 0 24 24"><use href="#ic-cloud"/></svg></div><span style="font-weight:700">Cloud backup of your emails</span></div>
       </div>
     </div>
     <div id="premPlans" style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
-      <div class="plan off" data-plan="weekly">
+      <div class="plan on" data-plan="pkg7" onclick="selectPlan('pkg7')">
         <div class="radio"><svg viewBox="0 0 24 24"><use href="#ic-check"/></svg></div>
-        <div><div class="nm">Weekly</div><div class="sub">Not available right now</div></div>
-        <div class="pr" style="font-size:14px;color:var(--sub);font-weight:400">Unavailable</div>
-      </div>
-      <div class="plan on" data-plan="monthly" onclick="selectPlan('monthly')">
-        <div class="radio"><svg viewBox="0 0 24 24"><use href="#ic-check"/></svg></div>
-        <div><div class="nm">Monthly<span class="badge green">90% OFF</span></div><div class="sub">$0.30 for 1 month, then $2.99 / month</div></div>
-        <div class="pr">$0.30<div class="old">$2.99</div></div>
-      </div>
-      <div class="plan" data-plan="3months" onclick="selectPlan('3months')">
-        <div class="radio"><svg viewBox="0 0 24 24"><use href="#ic-check"/></svg></div>
-        <div><div class="nm">3 Months</div><div class="sub">Billed every 3 months</div></div>
-        <div class="pr">$6.99<div class="save">Save 22%</div></div>
-      </div>
-      <div class="plan" data-plan="6months" onclick="selectPlan('6months')">
-        <div class="radio"><svg viewBox="0 0 24 24"><use href="#ic-check"/></svg></div>
-        <div><div class="nm">6 Months<span class="badge orange">Best Value</span></div><div class="sub">Billed every 6 months</div></div>
-        <div class="pr">$11.99<div class="save">Save 33%</div></div>
-      </div>
-      <div class="plan" data-plan="yearly" onclick="selectPlan('yearly')">
-        <div class="radio"><svg viewBox="0 0 24 24"><use href="#ic-check"/></svg></div>
-        <div><div class="nm">Yearly</div><div class="sub">Billed once a year</div></div>
-        <div class="pr">$19.99<div class="save">Save 44%</div></div>
-      </div>
-    </div>
-    <button class="gold-btn" style="margin-top:16px;display:flex;align-items:center;justify-content:center;gap:10px" onclick="buyPremium()"><svg width="20" height="20" viewBox="0 0 24 24" style="color:#fff"><use href="#ic-crown"/></svg> Get Premium</button>
-    <div class="sec-label" style="margin-top:22px">Remove Ads only</div>
-    <div class="note" style="margin:0 0 10px">បិទ Ads (Banner + Pop-up) តែមិនទិញ Premium — មិនបាន .com email និងមិនបាន Gmail មិនកំណត់ទេ។</div>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <div class="plan" onclick="buyRemoveAds('adfree7')">
-        <div class="radio"><svg viewBox="0 0 24 24"><use href="#ic-check"/></svg></div>
-        <div><div class="nm">Remove Ads — 7 Days</div><div class="sub">No ads for 7 days</div></div>
-        <div class="pr">$0.99</div>
-      </div>
-      <div class="plan" onclick="buyRemoveAds('adfree30')">
-        <div class="radio"><svg viewBox="0 0 24 24"><use href="#ic-check"/></svg></div>
-        <div><div class="nm">Remove Ads — 1 Month</div><div class="sub">No ads for 30 days</div></div>
+        <div><div class="nm">7 Days</div><div class="sub">Create Gmail + No ads for 7 days</div></div>
         <div class="pr">$1.99</div>
       </div>
+      <div class="plan" data-plan="pkg30" onclick="selectPlan('pkg30')">
+        <div class="radio"><svg viewBox="0 0 24 24"><use href="#ic-check"/></svg></div>
+        <div><div class="nm">1 Month</div><div class="sub">Create Gmail + No ads for 30 days</div></div>
+        <div class="pr">$2.99</div>
+      </div>
     </div>
+    <button class="gold-btn" style="margin-top:16px;display:flex;align-items:center;justify-content:center;gap:10px" onclick="buyPremium()"><svg width="20" height="20" viewBox="0 0 24 24" style="color:#fff"><use href="#ic-crown"/></svg> Buy Package</button>
     <div style="text-align:center;margin-top:14px;font-size:13px;color:#2563eb">
       <span onclick="restorePurchases()" style="cursor:pointer">Restore Purchases</span> · <span onclick="openInfoSheet('terms')" style="cursor:pointer">Terms of Use</span> · <span onclick="openInfoSheet('privacy')" style="cursor:pointer">Privacy Policy</span>
     </div>
@@ -661,7 +626,7 @@
   <div class="note" id="quotaBody" style="margin:0 0 12px"></div>
   <div class="row">
     <button class="btn-primary" id="watchAdBtn" onclick="watchAdForGmail()">មើល Ad — បាន 1 Gmail</button>
-    <button class="btn-ghost" onclick="closeAllSheets();openPremium()">ទិញ Premium</button>
+    <button class="btn-ghost" onclick="closeAllSheets();openPremium()">ទិញកញ្ចប់</button>
   </div>
 </div>
 
@@ -789,7 +754,12 @@ function accountKey() {
   } catch (e) { return 'guest'; }
 }
 function isAdmin() { return accountKey() === 'sokhoeun356@gmail.com'; }
-function isPremium() { return isAdmin() || localStorage.getItem('tempmail_premium') === '1'; }
+function isPremium() {
+  if (isAdmin()) return true;
+  if (localStorage.getItem('tempmail_premium') !== '1') return false;
+  const u = localStorage.getItem('tempmail_premium_until');
+  return !u || new Date(u).getTime() > Date.now();
+}
 function isAdFree() { const u = localStorage.getItem('tempmail_adfree_until'); return !!u && new Date(u).getTime() > Date.now(); }
 function noAds() { return isPremium() || isAdFree(); }
 function getAdsenseClient() { return (localStorage.getItem(LS_ADSENSE) || DEFAULT_ADSENSE || '').trim(); }
@@ -947,7 +917,7 @@ function goPage(p) {
 
 // ---- language ------------------------------------------------------------
 const STRINGS = {
-  km: { nav_home: 'ទំព័រដើម', nav_inbox: 'សំបុត្រ', nav_history: 'ប្រវត្តិ', nav_settings: 'ការកំណត់', temp_addr: 'Temporary address', copy: 'Copy', qr: 'QR Code', share: 'Share', new_addr: 'AI Generate', custom_email: 'Custom Email', ai_country: 'ជ្រើសរើសប្រទេស — AI បង្កើតឈ្មោះតាមប្រទេសនោះ', custom_name: 'ដាក់ឈ្មោះខ្លួនឯង', otp_found: 'រកឃើញលេខកូដ OTP', copy_otp: 'ចម្លង OTP', premium_title: 'Get your own .com email', prem1: 'Exclusive .com domains', prem2: 'Create your custom email', prem3: 'No ads at all', prem4: 'Free forever', signup_now: 'Sign Up →', get_premium: 'Get Premium', signup_title: 'ចុះឈ្មោះ Gmail នេះឲ្យក្លាយជាគណនីពិត', signup_note: 'ចុចសេវាណាមួយ — អាសយដ្ឋាននឹងចម្លងរួចហើយ បើកទំព័រចុះឈ្មោះ។', inbox_title: 'All messages', refresh: 'ផ្ទុកឡើងវិញ', auto_check: 'ឆែកសំបុត្ររាល់ 10 វិនាទីដោយស្វ័យប្រវត្តិ', history_title: 'All addresses', saved: 'Saved', deleted: 'Deleted', free_forever: 'Free forever · No ads', share_app: 'Share App', custom_label: 'ឈ្មោះអាសយដ្ឋាន (អក្សរអង់គ្លេស និងលេខតែប៉ុណ្ណោះ — សញ្ញា «.» ប្រើមិនបានទេ)', qr_title: 'QR Code' },
+  km: { nav_home: 'ទំព័រដើម', nav_inbox: 'សំបុត្រ', nav_history: 'ប្រវត្តិ', nav_settings: 'ការកំណត់', temp_addr: 'Temporary address', copy: 'Copy', qr: 'QR Code', share: 'Share', new_addr: 'AI Generate', custom_email: 'Custom Email', ai_country: 'ជ្រើសរើសប្រទេស — AI បង្កើតឈ្មោះតាមប្រទេសនោះ', custom_name: 'ដាក់ឈ្មោះខ្លួនឯង', otp_found: 'រកឃើញលេខកូដ OTP', copy_otp: 'ចម្លង OTP', premium_title: 'Packages — Create Gmail + No ads', prem1: 'Exclusive .com domains', prem2: 'Create your custom email', prem3: 'No ads at all', prem4: 'Free forever', signup_now: 'Sign Up →', get_premium: 'Buy Package', signup_title: 'ចុះឈ្មោះ Gmail នេះឲ្យក្លាយជាគណនីពិត', signup_note: 'ចុចសេវាណាមួយ — អាសយដ្ឋាននឹងចម្លងរួចហើយ បើកទំព័រចុះឈ្មោះ។', inbox_title: 'All messages', refresh: 'ផ្ទុកឡើងវិញ', auto_check: 'ឆែកសំបុត្ររាល់ 10 វិនាទីដោយស្វ័យប្រវត្តិ', history_title: 'All addresses', saved: 'Saved', deleted: 'Deleted', free_forever: 'Free forever · No ads', share_app: 'Share App', custom_label: 'ឈ្មោះអាសយដ្ឋាន (អក្សរអង់គ្លេស និងលេខតែប៉ុណ្ណោះ — សញ្ញា «.» ប្រើមិនបានទេ)', qr_title: 'QR Code' },
   en: { nav_home: 'Home', nav_inbox: 'Inbox', nav_history: 'History', nav_settings: 'Settings', temp_addr: 'Temporary address', copy: 'Copy', qr: 'QR Code', share: 'Share', new_addr: 'AI Generate', custom_email: 'Custom Email', ai_country: 'Choose a country — AI creates a name from that country', custom_name: 'Custom name', otp_found: 'OTP code found', copy_otp: 'Copy OTP', premium_title: 'Get your own .com email', prem1: 'Exclusive .com domains', prem2: 'Create your custom email', prem3: 'No ads at all', prem4: 'Free forever', signup_now: 'Sign Up →', get_premium: 'Get Premium', signup_title: 'Sign up this Gmail as a real account', signup_note: 'Tap a service — the address is copied and the sign-up page opens.', inbox_title: 'All messages', refresh: 'Reload', auto_check: 'Auto-checks mail every 10 seconds', history_title: 'All addresses', saved: 'Saved', deleted: 'Deleted', free_forever: 'Free forever · No ads', share_app: 'Share App', custom_label: 'Address name (English letters and numbers only — «.» is not allowed)', qr_title: 'QR Code' },
 };
 function applyLang() {
@@ -1092,38 +1062,25 @@ function openQrSheet() {
 }
 function openSignupSheet() { openSheetEl('signupSheet'); }
 // ---- Premium page ---------------------------------------------------------
-let selectedPlan = 'monthly';
+let selectedPlan = 'pkg7';
 function openPremium() { $('premiumPage').style.display = 'block'; }
 function closePremium() { $('premiumPage').style.display = 'none'; }
 function selectPlan(id) {
-  if (id === 'weekly') return;
   selectedPlan = id;
   document.querySelectorAll('#premPlans .plan').forEach(p => p.classList.toggle('on', p.dataset.plan === id));
 }
 const ADMIN_EMAIL = 'sokhoeun356@gmail.com';
 const ADMIN_TELEGRAM = 'yemsokhoeun_9999';
-const PLAN_NAMES = { monthly: 'Monthly — $0.30', '3months': '3 Months — $6.99', '6months': '6 Months — $11.99', yearly: 'Yearly — $19.99' };
+const PLAN_NAMES = { pkg7: '7 Days — $1.99', pkg30: '1 Month — $2.99' };
 function buyPremium() {
-  selectedRemoveAds = null;
-  const plan = PLAN_NAMES[selectedPlan] || 'Premium';
+  const plan = PLAN_NAMES[selectedPlan] || 'Package';
   const addr = active ? active.address : '(no address yet)';
   $('buyTitle').textContent = 'Buy ' + plan;
-  $('buyBody').textContent = 'Plan: ' + plan + '\nTempMail: ' + addr + '\n\nTap \u201cSend Request to Admin\u201d — your request goes straight to the admin, who will reply with payment details and activate your Premium.';
-  openSheetEl('buySheet');
-}
-const REMOVE_ADS_PLANS = { adfree7: 'Remove Ads — 7 Days — $0.99', adfree30: 'Remove Ads — 1 Month — $1.99' };
-let selectedRemoveAds = null;
-function buyRemoveAds(id) {
-  selectedRemoveAds = id;
-  const plan = REMOVE_ADS_PLANS[id] || 'Remove Ads';
-  const addr = active ? active.address : '(no address yet)';
-  $('buyTitle').textContent = 'Buy ' + plan;
-  $('buyBody').textContent = 'Plan: ' + plan + '\nTempMail: ' + addr + '\n\nTap "Send Request to Admin" — your request goes straight to the admin, who will reply with payment details and activate ad-free for you.';
+  $('buyBody').textContent = 'Plan: ' + plan + '\nTempMail: ' + addr + '\n\nTap \u201cSend Request to Admin\u201d — your request goes straight to the admin, who will reply with payment details and activate your package.';
   openSheetEl('buySheet');
 }
 async function sendBuyRequest() {
-  const plan = selectedRemoveAds ? (REMOVE_ADS_PLANS[selectedRemoveAds] || 'Remove Ads') : (PLAN_NAMES[selectedPlan] || 'Premium');
-  selectedRemoveAds = null;
+  const plan = PLAN_NAMES[selectedPlan] || 'Package';
   const price = (plan.match(/\$[\d.]+/) || [''])[0];
   const addr = active ? active.address : '';
   const userEmail = session ? session.email : '';
@@ -1527,8 +1484,14 @@ function registerUserToServer(name, email, provider) {
 function syncPremium(email) {
   if (!email) return;
   fetch('/api/premium?email=' + encodeURIComponent(email)).then(r => r.json()).then(d => {
-    if (d.premium) localStorage.setItem('tempmail_premium', '1');
-    else if (!isAdmin()) localStorage.removeItem('tempmail_premium');
+    if (d.premium) {
+      localStorage.setItem('tempmail_premium', '1');
+      if (d.premiumUntil) localStorage.setItem('tempmail_premium_until', d.premiumUntil);
+      else localStorage.removeItem('tempmail_premium_until');
+    } else if (!isAdmin()) {
+      localStorage.removeItem('tempmail_premium');
+      localStorage.removeItem('tempmail_premium_until');
+    }
     if (d.adFree && d.adFreeUntil) localStorage.setItem('tempmail_adfree_until', d.adFreeUntil);
     else localStorage.removeItem('tempmail_adfree_until');
     if (typeof renderQuota === 'function') renderQuota();

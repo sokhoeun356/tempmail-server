@@ -244,15 +244,23 @@ app.post('/api/admin/requests/:id/status', (req, res) => {
   r.status = status;
   writeJson('requests.json', reqs);
   if (status === 'approved' && r.userEmail) {
-    if (/remove ads/i.test(r.plan || '')) {
-      const days = /7\s*days/i.test(r.plan) ? 7 : 30;
-      const adfree = readJson('adfree.json', {});
-      adfree[r.userEmail] = new Date(Date.now() + days * 24 * 3600 * 1000).toISOString();
-      writeJson('adfree.json', adfree);
-    } else {
-      const prem = readJson('premium.json', []);
-      if (!prem.includes(r.userEmail)) { prem.push(r.userEmail); writeJson('premium.json', prem); }
-    }
+    const plan = r.plan || '';
+    let days = 30;
+    if (/7\s*days/i.test(plan)) days = 7;
+    else if (/1\s*month/i.test(plan)) days = 30;
+    else if (/3\s*months/i.test(plan)) days = 90;
+    else if (/6\s*months/i.test(plan)) days = 180;
+    else if (/yearly/i.test(plan)) days = 365;
+    const until = new Date(Date.now() + days * 24 * 3600 * 1000).toISOString();
+    // premium.json is a map email -> expiry ISO (legacy list = lifetime premium)
+    const premRaw = readJson('premium.json', {});
+    const premMap = Array.isArray(premRaw) ? {} : premRaw;
+    if (Array.isArray(premRaw)) premRaw.forEach(e => { premMap[e] = null; });
+    premMap[r.userEmail] = until;
+    writeJson('premium.json', premMap);
+    const adfree = readJson('adfree.json', {});
+    adfree[r.userEmail] = until;
+    writeJson('adfree.json', adfree);
   }
   res.json({ ok: true });
 });
@@ -281,12 +289,18 @@ app.get('/api/admin/users', (req, res) => {
 // GET /api/premium?email=... — is this email Premium (admin-approved)?
 app.get('/api/premium', (req, res) => {
   const email = String(req.query.email || '').trim().toLowerCase();
-  if (email === ADMIN_EMAIL) return res.json({ premium: true, adFree: true, adFreeUntil: null });
-  const prem = readJson('premium.json', []);
+  if (email === ADMIN_EMAIL) return res.json({ premium: true, adFree: true, adFreeUntil: null, premiumUntil: null });
+  const prem = readJson('premium.json', {});
   const adfree = readJson('adfree.json', {});
-  const until = adfree[email] || null;
-  const adFree = !!until && new Date(until).getTime() > Date.now();
-  res.json({ premium: prem.includes(email), adFree, adFreeUntil: adFree ? until : null });
+  let premium = false, premiumUntil = null;
+  if (Array.isArray(prem)) { premium = prem.includes(email); }
+  else {
+    premiumUntil = prem[email] || null;
+    premium = !!premiumUntil && new Date(premiumUntil).getTime() > Date.now();
+  }
+  const aUntil = adfree[email] || null;
+  const adFree = !!aUntil && new Date(aUntil).getTime() > Date.now();
+  res.json({ premium, premiumUntil, adFree, adFreeUntil: adFree ? aUntil : null });
 });
 
 // Health check
